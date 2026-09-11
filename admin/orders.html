@@ -1,0 +1,635 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>الطلبات - الهيكو Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+    <style>
+        .status-select {
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: none;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            font-family: var(--font-body);
+            transition: opacity 0.2s;
+        }
+
+        .status-select:hover {
+            opacity: 0.85;
+        }
+
+        .s-pending {
+            background: #fff8e1;
+            color: #e65100;
+        }
+
+        .s-processing {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .s-shipped {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .s-delivered {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .s-returned {
+            background: #fff3e0;
+            color: #bf360c;
+        }
+
+        .s-cancelled {
+            background: #fce4ec;
+            color: #c62828;
+        }
+
+        /* Quick action buttons */
+        .qa-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .qa-ok {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .qa-ok:hover {
+            background: #2e7d32;
+            color: #fff;
+            transform: scale(1.12);
+        }
+
+        .qa-bad {
+            background: #fce4ec;
+            color: #c62828;
+        }
+
+        .qa-bad:hover {
+            background: #c62828;
+            color: #fff;
+            transform: scale(1.12);
+        }
+
+        .qa-del {
+            background: #f5f5f5;
+            color: var(--text-light);
+        }
+
+        .qa-del:hover {
+            background: #ffebee;
+            color: #c62828;
+            transform: scale(1.12);
+        }
+
+        .qa-eye {
+            background: #f5f5f5;
+            color: var(--text-light);
+        }
+
+        .qa-eye:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: scale(1.12);
+        }
+
+        /* Row animations */
+        @keyframes flashGreen {
+
+            0%,
+            100% {
+                background: transparent
+            }
+
+            50% {
+                background: rgba(46, 125, 50, 0.1)
+            }
+        }
+
+        @keyframes flashRed {
+
+            0%,
+            100% {
+                background: transparent
+            }
+
+            50% {
+                background: rgba(198, 40, 40, 0.08)
+            }
+        }
+
+        .flash-ok {
+            animation: flashGreen 0.7s ease;
+        }
+
+        .flash-err {
+            animation: flashRed 0.7s ease;
+        }
+
+        /* Tab badges */
+        .tab-badge {
+            background: rgba(0, 0, 0, 0.15);
+            color: inherit;
+            border-radius: 10px;
+            padding: 1px 6px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            margin-right: 3px;
+        }
+
+        .btn-primary .tab-badge {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Sortable header */
+        .th-sort {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .th-sort:hover {
+            color: var(--primary);
+        }
+    </style>
+<link rel="stylesheet" href="/css/mobile.css" />
+<script>
+/* ===== Dark/Light Mode ===== */
+function toggleTheme() {
+    var html = document.documentElement;
+    var current = html.getAttribute('data-theme') || 'light';
+    var next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('heiko_theme', next);
+}
+/* Apply saved theme immediately */
+(function() {
+    var saved = localStorage.getItem('heiko_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+</head>
+
+<body class="admin-body">
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo"><a href="index.html"><span class="admin-tag">Admin</span><img class="site-logo" src="/images/logo/heiko.png" alt="الهيكو" style="height:38px;filter:brightness(0) invert(1);" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"  /><span style="display:none;font-family:var(--font-heading);font-size:1.6rem;letter-spacing:2px;">HEIKO</span></a>
+            </div>
+            <nav class="admin-nav">
+                <div class="nav-section-label">الرئيسية</div>
+                <a href="index.html" class="admin-nav-item"><i class="fas fa-chart-pie"></i> لوحة التحكم</a>
+                <div class="nav-section-label">المتجر</div>
+                <a href="products.html" class="admin-nav-item"><i class="fas fa-spray-can"></i> المنتجات</a>
+                <a href="orders.html" class="admin-nav-item active"><i class="fas fa-shopping-cart"></i> الطلبات</a>
+                <a href="offers.html" class="admin-nav-item"><i class="fas fa-tags"></i> العروض</a>
+                <div class="nav-section-label">الإدارة</div>
+                <a href="users.html" class="admin-nav-item"><i class="fas fa-users"></i> المستخدمون</a>
+                <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> عرض المتجر</a>
+            </nav>
+            <div class="admin-user-block">
+                <div class="admin-avatar" id="adminAvatar">A</div>
+                <div>
+                    <div class="admin-user-name" id="adminName">المدير</div>
+                    <div class="admin-user-role">مدير النظام</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <!-- TOPBAR -->
+            <div class="admin-topbar">
+                <div class="topbar-left"><span class="topbar-title">إدارة الطلبات</span></div>
+                <div class="topbar-right">
+                    <button class="topbar-btn" title="تحديث" onclick="loadOrders()"><i
+                            class="fas fa-sync-alt"></i></button>
+                    <button class="topbar-btn" title="تصدير" onclick="exportOrders()"><i
+                            class="fas fa-download"></i></button>
+                    <button class="topbar-btn" title="إشعارات" onclick="showToast('لا توجد إشعارات','info')"><i
+                            class="fas fa-bell"></i></button>
+                    <button class="topbar-btn" title="خروج" onclick="adminLogout()"><i
+                            class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+
+            <div class="admin-content">
+                <div class="page-heading">
+                    <div>
+                        <h1>الطلبات</h1>
+                        <p>تتبع وتحديث حالات الطلبات</p>
+                    </div>
+                </div>
+
+                <!-- Status Tabs with counts -->
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;" id="statusTabs">
+                    <button class="btn btn-primary btn-sm status-tab" data-status="">
+                        <span class="tab-badge" id="cnt-all">0</span> الكل
+                    </button>
+                    <button class="btn btn-outline btn-sm status-tab" data-status="pending">
+                        <span class="tab-badge" id="cnt-pending">0</span> ⏳ معلق
+                    </button>
+                    <button class="btn btn-outline btn-sm status-tab" data-status="processing">
+                        <span class="tab-badge" id="cnt-processing">0</span> ⚙️ قيد التجهيز
+                    </button>
+                    <button class="btn btn-outline btn-sm status-tab" data-status="shipped">
+                        <span class="tab-badge" id="cnt-shipped">0</span> 🚚 شُحن
+                    </button>
+                    <button class="btn btn-outline btn-sm status-tab" data-status="delivered">
+                        <span class="tab-badge" id="cnt-delivered">0</span> ✅ مُسلَّم
+                    </button>
+                    <button class="btn btn-outline btn-sm status-tab" data-status="returned">
+                        <span class="tab-badge" id="cnt-returned">0</span> ↩️ مرتجع
+                    </button>
+                    <button class="btn btn-outline btn-sm status-tab" data-status="cancelled">
+                        <span class="tab-badge" id="cnt-cancelled">0</span> ❌ ملغي
+                    </button>
+                </div>
+
+                <!-- Toolbar -->
+                <div
+                    style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+                    <div class="toolbar-search" style="flex:1;max-width:400px;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="orderSearch" placeholder="بحث برقم الطلب أو اسم العميل أو الموبايل..."
+                            oninput="filterOrders()" />
+                    </div>
+                    <span id="ordersCount" style="font-size:0.85rem;color:var(--text-light);white-space:nowrap;">0
+                        طلب</span>
+                </div>
+
+                <!-- Orders Table -->
+                <div class="admin-card">
+                    <div class="table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th class="th-sort" onclick="sortOrders('id')"># <i class="fas fa-sort"
+                                            style="opacity:0.3;font-size:0.7rem;"></i></th>
+                                    <th>العميل</th>
+                                    <th>الموبايل</th>
+                                    <th>المنتجات</th>
+                                    <th class="th-sort" onclick="sortOrders('total')">الإجمالي <i class="fas fa-sort"
+                                            style="opacity:0.3;font-size:0.7rem;"></i></th>
+                                    <th class="th-sort" onclick="sortOrders('date')">التاريخ <i class="fas fa-sort"
+                                            style="opacity:0.3;font-size:0.7rem;"></i></th>
+                                    <th style="min-width:155px;">الحالة</th>
+                                    <th style="min-width:130px;">إجراءات سريعة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                                <tr>
+                                    <td colspan="8" style="text-align:center;padding:40px;color:var(--text-light);">
+                                        <div class="spinner" style="margin:0 auto 12px;"></div> جاري التحميل...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3 class="modal-title" id="orderModalTitle">تفاصيل الطلب</h3>
+                <button class="modal-close" onclick="closeOrderModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="orderModalBody"></div>
+            <div class="modal-footer">
+                <button class="btn btn-outline btn-sm" onclick="closeOrderModal()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete -->
+    <div class="modal-overlay" id="deleteOrderModal">
+        <div class="modal" style="max-width:380px;">
+            <div class="modal-body" style="text-align:center;padding:28px;">
+                <i class="fas fa-trash-alt"
+                    style="font-size:2.5rem;color:var(--error);margin-bottom:12px;display:block;"></i>
+                <h3 style="font-size:1.1rem;color:var(--secondary);margin-bottom:8px;">حذف الطلب؟</h3>
+                <p style="font-size:0.87rem;color:var(--text-light);" id="deleteOrderMsg">هل تريد حذف هذا الطلب نهائياً؟
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline btn-sm"
+                    onclick="document.getElementById('deleteOrderModal').classList.remove('open')">إلغاء</button>
+                <button class="btn btn-sm" style="background:var(--error);color:#fff;"
+                    id="confirmDeleteOrderBtn">حذف</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+    <script src="/js/main.js"></script>
+    <script src="/js/admin.js"></script>
+    <script>
+        /* ── Constants ─────────────────────────────────────────── */
+        const STATUS_LABELS = {
+            pending: '⏳ معلق',
+            processing: '⚙️ قيد التجهيز',
+            shipped: '🚚 شُحن',
+            delivered: '✅ مُسلَّم',
+            returned: '↩️ مرتجع',
+            cancelled: '❌ ملغي'
+        };
+        const STATUS_CLS = {
+            pending: 's-pending', processing: 's-processing', shipped: 's-shipped',
+            delivered: 's-delivered', returned: 's-returned', cancelled: 's-cancelled'
+        };
+
+        let _sortKey = 'id';
+        let _sortAsc = true;   // أقدم أولاً (id أصغر = أقدم)
+
+        /* ── Init ──────────────────────────────────────────────── */
+        document.addEventListener('DOMContentLoaded', () => {
+            initAdminAuth();
+            loadOrders();
+
+            document.querySelectorAll('.status-tab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.status-tab').forEach(b => {
+                        b.classList.remove('btn-primary'); b.classList.add('btn-outline');
+                    });
+                    btn.classList.remove('btn-outline'); btn.classList.add('btn-primary');
+                    window._orderStatusFilter = btn.dataset.status;
+                    filterOrders();
+                });
+            });
+        });
+
+        /* ── Sort ──────────────────────────────────────────────── */
+        function sortOrders(key) {
+            if (_sortKey === key) _sortAsc = !_sortAsc;
+            else { _sortKey = key; _sortAsc = true; }
+            filterOrders();
+        }
+
+        /* ── Render ────────────────────────────────────────────── */
+        function renderOrdersTable(list) {
+            const tbody = document.getElementById('ordersTableBody');
+            document.getElementById('ordersCount').textContent = `${list.length} طلب`;
+
+            // Update tab counts
+            const counts = {};
+            _orders.forEach(o => { counts[o.status] = (counts[o.status] || 0) + 1; });
+            document.getElementById('cnt-all').textContent = _orders.length;
+            ['pending', 'processing', 'shipped', 'delivered', 'returned', 'cancelled'].forEach(s => {
+                const el = document.getElementById(`cnt-${s}`);
+                if (el) el.textContent = counts[s] || 0;
+            });
+
+            if (!list.length) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-light);">
+      <i class="fas fa-inbox" style="font-size:2.5rem;display:block;margin-bottom:8px;opacity:0.25;"></i>
+      لا توجد طلبات
+    </td></tr>`;
+                return;
+            }
+
+            // Sort
+            const sorted = [...list].sort((a, b) => {
+                let va = _sortKey === 'id' ? a.id : _sortKey === 'total' ? (a.total || 0) : a.date || '';
+                let vb = _sortKey === 'id' ? b.id : _sortKey === 'total' ? (b.total || 0) : b.date || '';
+                if (typeof va === 'string') return _sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+                return _sortAsc ? va - vb : vb - va;
+            });
+
+            tbody.innerHTML = sorted.map(o => `
+    <tr id="orow-${o.id}">
+      <td><strong style="color:var(--primary);">#${o.id}</strong></td>
+      <td><strong>${o.customer || '-'}</strong></td>
+      <td style="direction:ltr;text-align:right;font-size:0.85rem;">${o.phone || '-'}</td>
+      <td style="font-size:0.85rem;">${o.items_count || 0} قطعة</td>
+      <td><strong>${Number(o.total || 0).toLocaleString('ar-EG')} ج.م</strong></td>
+      <td style="font-size:0.82rem;color:var(--text-light);">${o.date || ''}</td>
+      <td>
+        <select class="status-select ${STATUS_CLS[o.status] || 's-pending'}"
+                onchange="changeStatus(${o.id}, this)">
+          ${Object.entries(STATUS_LABELS).map(([v, l]) =>
+                `<option value="${v}" ${o.status === v ? 'selected' : ''}>${l}</option>`
+            ).join('')}
+        </select>
+      </td>
+      <td>
+        <div style="display:flex;gap:5px;align-items:center;">
+          <!-- ✓ تأكيد / تسليم -->
+          <button class="qa-btn qa-ok" title="تأكيد / تسليم"
+                  onclick="confirmOrder(${o.id})">✓</button>
+          <!-- ✗ إلغاء -->
+          <button class="qa-btn qa-bad" title="إلغاء الطلب"
+                  onclick="cancelOrder(${o.id})">✗</button>
+          <!-- 👁 تفاصيل -->
+          <button class="qa-btn qa-eye" title="تفاصيل"
+                  onclick="viewOrderDetails(${o.id})">
+            <i class="fas fa-eye"></i>
+          </button>
+          <!-- 🗑 حذف -->
+          <button class="qa-btn qa-del" title="حذف"
+                  onclick="askDeleteOrder(${o.id})">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </td>
+    </tr>`).join('');
+        }
+
+        /* ── Quick confirm (✓) ─────────────────────────────────── */
+        async function confirmOrder(id) {
+            const o = _orders.find(x => x.id === id);
+            if (!o) return;
+            // pending → processing, processing/shipped → delivered
+            const next = o.status === 'delivered' ? 'delivered'
+                : o.status === 'pending' ? 'processing'
+                    : 'delivered';
+            await changeStatusTo(id, next);
+        }
+
+        /* ── Quick cancel (✗) ──────────────────────────────────── */
+        async function cancelOrder(id) {
+            const o = _orders.find(x => x.id === id);
+            if (!o) return;
+            if (o.status === 'delivered') { showToast('لا يمكن إلغاء طلب مُسلَّم بالفعل', 'error'); return; }
+            await changeStatusTo(id, 'cancelled');
+        }
+
+        /* ── Change status (dropdown) ──────────────────────────── */
+        async function changeStatus(id, sel) {
+            const newStatus = sel.value;
+            sel.dataset.prev = newStatus;
+            sel.className = `status-select ${STATUS_CLS[newStatus] || 's-pending'}`;
+            await changeStatusTo(id, newStatus, sel);
+        }
+
+        /* ── Core status update ────────────────────────────────── */
+        async function changeStatusTo(id, newStatus, selEl) {
+            const o = _orders.find(x => x.id === id);
+            if (!o) return;
+            const oldStatus = o.status;
+
+            try {
+                const res = await fetch(`/api/orders/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                if (!res.ok) throw new Error();
+
+                o.status = newStatus;
+
+                // Update dropdown in row
+                const sel = selEl || document.querySelector(`#orow-${id} .status-select`);
+                if (sel) { sel.value = newStatus; sel.className = `status-select ${STATUS_CLS[newStatus] || 's-pending'}`; }
+
+                // Flash row
+                const row = document.getElementById(`orow-${id}`);
+                if (row) {
+                    const cls = newStatus === 'cancelled' ? 'flash-err' : 'flash-ok';
+                    row.classList.add(cls);
+                    setTimeout(() => row.classList.remove(cls), 700);
+                }
+
+                showToast(`الطلب #${id} → ${STATUS_LABELS[newStatus]}`, 'success');
+
+                // Update tab counts
+                renderOrdersTable(_orders.filter(o =>
+                    (!window._orderStatusFilter || o.status === window._orderStatusFilter) &&
+                    (!document.getElementById('orderSearch')?.value || o.customer?.includes(document.getElementById('orderSearch').value) || String(o.id).includes(document.getElementById('orderSearch').value))
+                ));
+            } catch {
+                if (o) o.status = oldStatus;
+                if (selEl) { selEl.value = oldStatus; selEl.className = `status-select ${STATUS_CLS[oldStatus] || 's-pending'}`; }
+                showToast('فشل التحديث، حاول مرة أخرى', 'error');
+            }
+        }
+
+        /* ── Delete order ──────────────────────────────────────── */
+        function askDeleteOrder(id) {
+            document.getElementById('deleteOrderMsg').textContent = `هل تريد حذف الطلب #${id} نهائياً؟`;
+            document.getElementById('confirmDeleteOrderBtn').onclick = () => doDeleteOrder(id);
+            document.getElementById('deleteOrderModal').classList.add('open');
+        }
+
+        async function doDeleteOrder(id) {
+            document.getElementById('deleteOrderModal').classList.remove('open');
+            try {
+                const res = await fetch(`/api/orders/${id}`, {
+                    method: "DELETE",
+                    headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+                });
+                if (!res.ok) throw new Error("failed");
+                _orders = _orders.filter(o => o.id !== id);
+                filterOrders();
+                showToast(`تم حذف الطلب #${id} نهائياً`, "success");
+            } catch {
+                showToast('فشل الحذف', 'error');
+            }
+        }
+
+        /* ── View details ──────────────────────────────────────── */
+        function viewOrderDetails(id) {
+            const o = _orders.find(x => x.id === id);
+            if (!o) return;
+
+            document.getElementById('orderModalTitle').textContent = `تفاصيل الطلب #${o.id}`;
+            document.getElementById('orderModalBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+      <div style="background:var(--bg);border-radius:var(--radius-sm);padding:14px;">
+        <div style="font-size:0.75rem;color:var(--text-light);font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">بيانات العميل</div>
+        <div style="font-weight:700;font-size:0.95rem;">${o.customer || '-'}</div>
+        <div style="font-size:0.85rem;color:var(--text-light);direction:ltr;text-align:right;margin-top:2px;">${o.phone || ''}</div>
+        <div style="font-size:0.84rem;color:var(--text-light);margin-top:4px;">${o.address || ''}${o.city ? ' — ' + o.city : ''}</div>
+        ${o.region ? `<div style="font-size:0.8rem;color:var(--text-light);">الحي: ${o.region}</div>` : ''}
+        ${o.notes ? `<div style="font-size:0.82rem;background:#fffde7;padding:6px 10px;border-radius:6px;margin-top:8px;"><i class="fas fa-sticky-note" style="color:var(--primary);margin-left:4px;"></i>${o.notes}</div>` : ''}
+      </div>
+      <div style="background:var(--bg);border-radius:var(--radius-sm);padding:14px;">
+        <div style="font-size:0.75rem;color:var(--text-light);font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">معلومات الطلب</div>
+        ${[['رقم الطلب', '#' + o.id], ['التاريخ', o.date || ''], ['طريقة الدفع', '💵 كاش عند الاستلام'], ['الحالة', `<span class="status-select ${STATUS_CLS[o.status] || 's-pending'}" style="padding:3px 10px;">${STATUS_LABELS[o.status] || o.status}</span>`]].map(([k, v]) => `
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.84rem;padding:4px 0;border-bottom:1px solid #f0f0f0;">
+          <span style="color:var(--text-light);">${k}</span><span>${v}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <div style="background:var(--bg);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;">
+      <div style="font-size:0.75rem;color:var(--text-light);font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">المنتجات</div>
+      ${(o.items || []).length ? (o.items || []).map(i => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:0.87rem;">
+          <div>
+            <strong>${i.name || ''}</strong>${i.brand ? ` <span style="color:var(--text-light);">(${i.brand})</span>` : ''}
+            <div style="font-size:0.75rem;color:var(--text-light);">${i.size || '50ml'} × ${i.qty || 1}</div>
+          </div>
+          <strong style="color:var(--primary);">${Number((i.price || 0) * (i.qty || 1)).toLocaleString('ar-EG')} ج.م</strong>
+        </div>`).join('') : `<div style="color:var(--text-light);font-size:0.85rem;">${o.items_count || 0} منتج</div>`}
+      <div style="display:flex;justify-content:space-between;padding-top:12px;font-weight:700;font-size:1rem;">
+        <span>الإجمالي</span>
+        <span style="color:var(--primary);font-family:var(--font-heading);font-size:1.2rem;">${Number(o.total || 0).toLocaleString('ar-EG')} ج.م</span>
+      </div>
+    </div>
+
+    <div style="background:var(--bg);border-radius:var(--radius-sm);padding:14px;">
+      <div style="font-size:0.75rem;color:var(--text-light);font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">تغيير الحالة</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${Object.entries(STATUS_LABELS).map(([val, lbl]) => `
+          <button onclick="quickStatusFromModal(${o.id},'${val}',this)"
+            class="status-quick-btn"
+            style="padding:8px 14px;border-radius:20px;
+                   border:2px solid ${o.status === val ? 'var(--primary)' : 'var(--border)'};
+                   background:${o.status === val ? 'var(--primary)' : 'transparent'};
+                   color:${o.status === val ? '#fff' : 'var(--text)'};
+                   font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;
+                   font-family:var(--font-body);"
+            data-status="${val}">${lbl}</button>`).join('')}
+      </div>
+    </div>`;
+
+            document.getElementById('orderModal').classList.add('open');
+        }
+
+        async function quickStatusFromModal(id, newStatus, btn) {
+            await changeStatusTo(id, newStatus);
+            document.querySelectorAll('.status-quick-btn').forEach(b => {
+                const active = b.dataset.status === newStatus;
+                b.style.background = active ? 'var(--primary)' : 'transparent';
+                b.style.borderColor = active ? 'var(--primary)' : 'var(--border)';
+                b.style.color = active ? '#fff' : 'var(--text)';
+            });
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.remove('open');
+        }
+    </script>
+</body>
+
+</html>

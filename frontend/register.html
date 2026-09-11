@@ -1,0 +1,511 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>إنشاء حساب - الهيكو</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+    <style>
+        /* Password strength */
+        .password-strength {
+            margin-top: 6px;
+            display: none;
+        }
+
+        .password-strength.visible {
+            display: block;
+        }
+
+        .strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border);
+            margin-bottom: 4px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s, background 0.3s;
+            width: 0%;
+        }
+
+        .strength-text {
+            font-size: 0.72rem;
+        }
+
+        .strength-weak .strength-fill {
+            width: 33%;
+            background: var(--error);
+        }
+
+        .strength-medium .strength-fill {
+            width: 66%;
+            background: var(--warning);
+        }
+
+        .strength-strong .strength-fill {
+            width: 100%;
+            background: var(--success);
+        }
+
+        .strength-weak .strength-text {
+            color: var(--error);
+        }
+
+        .strength-medium .strength-text {
+            color: var(--warning);
+        }
+
+        .strength-strong .strength-text {
+            color: var(--success);
+        }
+
+        /* Benefits panel */
+        .auth-benefits {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--secondary) 100%);
+            border-radius: var(--radius-lg);
+            padding: 40px 32px;
+            color: #fff;
+            max-width: 360px;
+        }
+
+        .auth-benefits h3 {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            margin-bottom: 24px;
+        }
+
+        .auth-benefits h3 span {
+            color: var(--primary);
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .benefit-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            background: rgba(201, 169, 110, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .benefit-item h4 {
+            font-size: 0.88rem;
+            margin-bottom: 2px;
+        }
+
+        .benefit-item p {
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+<style>
+.heiko-logo-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.heiko-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: heiko-spin 18s linear infinite;
+}
+@keyframes heiko-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.heiko-inner-logo {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+}
+.heiko-inner-text {
+  width: 38px; height: 38px;
+  background: var(--primary);
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  font-family: Georgia, serif;
+  font-size: 1.4rem;
+  color: #fff;
+  z-index: 1;
+}
+</style>
+<link rel="stylesheet" href="/css/mobile.css" />
+</head>
+
+<body>
+
+    <div class="auth-page" style="gap:32px;">
+
+        <!-- Benefits panel (hidden on mobile) -->
+        <div class="auth-benefits" style="display:none;" id="benefitsPanel">
+            <h3>انضم إلى عالم <span>الهيكو</span></h3>
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-gift"></i></div>
+                <div>
+                    <h4>خصم الترحيب</h4>
+                    <p>احصل على خصم 10% على أول طلب لك فور التسجيل</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-shipping-fast"></i></div>
+                <div>
+                    <h4>شحن مجاني</h4>
+                    <p>شحن مجاني على جميع الطلبات فوق 200 ريال</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-heart"></i></div>
+                <div>
+                    <h4>قائمة المفضلة</h4>
+                    <p>احفظ عطورك المفضلة وتابع تخفيضاتها</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-history"></i></div>
+                <div>
+                    <h4>سجل الطلبات</h4>
+                    <p>تتبع طلباتك وإعادة الشراء بنقرة واحدة</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon"><i class="fas fa-star"></i></div>
+                <div>
+                    <h4>نقاط المكافآت</h4>
+                    <p>اكسب نقاطاً مع كل عملية شراء واستبدلها بخصومات</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Card -->
+        <div class="auth-card" style="max-width:500px;">
+
+            <div class="auth-logo" style="text-align:center;margin-bottom:8px;">
+                <img src="/images/logo/heiko.png" alt="الهيكو" style="height:70px;width:auto;object-fit:contain;"
+                    onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+                <span
+                    style="display:none;font-family:var(--font-heading);font-size:2rem;color:var(--secondary);">HEIKO<span
+                        style="color:var(--primary);">.</span></span>
+            </div>
+            <h2 class="auth-title">إنشاء حساب جديد</h2>
+            <p class="auth-subtitle">انضم إلينا واستمتع بتجربة تسوق فاخرة</p>
+
+            <!-- Alert -->
+            <div id="authAlert"
+                style="display:none;padding:12px 16px;border-radius:var(--radius-sm);font-size:0.85rem;margin-bottom:16px;">
+            </div>
+
+            <form id="registerForm" novalidate>
+
+                <!-- Name row -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                    <div class="form-group">
+                        <label for="regFirstName">الاسم الأول <span style="color:var(--error)">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" class="form-control" id="regFirstName" placeholder="محمد" required
+                                autocomplete="given-name" />
+                        </div>
+                        <span class="field-error" id="firstNameError">الاسم الأول مطلوب</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="regLastName">اسم العائلة <span style="color:var(--error)">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" class="form-control" id="regLastName" placeholder="العتيبي" required
+                                autocomplete="family-name" />
+                        </div>
+                        <span class="field-error" id="lastNameError">اسم العائلة مطلوب</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regEmail">البريد الإلكتروني <span style="color:var(--error)">*</span></label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" class="form-control" id="regEmail" placeholder="example@email.com" required
+                            autocomplete="email" />
+                    </div>
+                    <span class="field-error" id="emailError">يرجى إدخال بريد إلكتروني صحيح</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="regPhone">رقم الموبايل</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-mobile-alt input-icon"></i>
+                        <input type="tel" class="form-control" id="regPhone" placeholder="01XXXXXXXXX"
+                            autocomplete="tel" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regPassword">كلمة المرور <span style="color:var(--error)">*</span></label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" class="form-control" id="regPassword" placeholder="8 أحرف على الأقل"
+                            required autocomplete="new-password" oninput="checkPasswordStrength(this.value)" />
+                        <button type="button" class="toggle-password" onclick="togglePass('regPassword', this)"
+                            aria-label="إظهار">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                    <span class="field-error" id="passError">كلمة المرور يجب أن تكون 8 أحرف على الأقل</span>
+                    <div class="password-strength" id="passStrength">
+                        <div class="strength-bar">
+                            <div class="strength-fill"></div>
+                        </div>
+                        <span class="strength-text"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regConfirmPassword">تأكيد كلمة المرور <span style="color:var(--error)">*</span></label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" class="form-control" id="regConfirmPassword"
+                            placeholder="أعد إدخال كلمة المرور" required autocomplete="new-password" />
+                        <button type="button" class="toggle-password" onclick="togglePass('regConfirmPassword', this)"
+                            aria-label="إظهار">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                    <span class="field-error" id="confirmPassError">كلمتا المرور غير متطابقتين</span>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label class="checkbox-item"
+                        style="cursor:pointer;font-size:0.83rem;gap:8px;display:flex;align-items:flex-start;">
+                        <input type="checkbox" id="agreeTerms"
+                            style="accent-color:var(--primary);width:15px;height:15px;margin-top:2px;flex-shrink:0;" />
+                        أوافق على
+                        <a href="#" style="color:var(--primary);">الشروط والأحكام</a>
+                        و
+                        <a href="#" style="color:var(--primary);">سياسة الخصوصية</a>
+                    </label>
+                    <span class="field-error" id="termsError">يجب الموافقة على الشروط والأحكام</span>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label class="checkbox-item"
+                        style="cursor:pointer;font-size:0.83rem;gap:8px;display:flex;align-items:center;">
+                        <input type="checkbox" id="newsletter" checked
+                            style="accent-color:var(--primary);width:15px;height:15px;" />
+                        أريد استقبال العروض والأخبار عبر البريد الإلكتروني
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" id="registerBtn">
+                    <i class="fas fa-user-plus"></i> إنشاء الحساب
+                </button>
+            </form>
+
+            <div class="auth-divider">أو</div>
+
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <button class="btn btn-block"
+                    style="border:1.5px solid var(--border);color:var(--text);background:#fff;font-size:0.88rem;"
+                    onclick="socialRegister('google')">
+                    <img src="https://www.google.com/favicon.ico" alt="Google" style="width:18px;height:18px;" />
+                    التسجيل عبر Google
+                </button>
+            </div>
+
+            <div class="auth-footer">
+                لديك حساب بالفعل؟ <a href="/login.html">تسجيل الدخول</a>
+            </div>
+
+            <div style="text-align:center;margin-top:12px;">
+                <a href="/" style="font-size:0.82rem;color:var(--text-light);">
+                    <i class="fas fa-arrow-right" style="margin-left:4px;"></i> العودة للمتجر
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        // Show benefits panel on larger screens
+        if (window.innerWidth >= 1024) {
+            document.getElementById('benefitsPanel').style.display = 'block';
+        }
+
+        // Register form submit
+        document.getElementById('registerForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            if (!validateRegisterForm()) return;
+
+            const btn = document.getElementById('registerBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإنشاء...';
+
+            const payload = {
+                first_name: document.getElementById('regFirstName').value.trim(),
+                last_name: document.getElementById('regLastName').value.trim(),
+                email: document.getElementById('regEmail').value.trim(),
+                phone: document.getElementById('regPhone').value.trim(),
+                password: document.getElementById('regPassword').value,
+                newsletter: document.getElementById('newsletter').checked
+            };
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    showAlert('تم إنشاء حسابك بنجاح! جاري التوجيه...', 'success');
+                    setTimeout(() => window.location.href = 'index.html', 1200);
+                } else {
+                    showAlert(data.message || 'حدث خطأ أثناء إنشاء الحساب', 'error');
+                }
+            } catch (err) {
+                showAlert('تعذّر الاتصال بالسيرفر، تأكد أن البيك إند شغال', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء الحساب';
+            }
+        });
+
+        function validateRegisterForm() {
+            let valid = true;
+
+            const fields = [
+                { id: 'regFirstName', errId: 'firstNameError', test: v => v.trim().length >= 2 },
+                { id: 'regLastName', errId: 'lastNameError', test: v => v.trim().length >= 2 },
+                { id: 'regEmail', errId: 'emailError', test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+                { id: 'regPassword', errId: 'passError', test: v => v.length >= 8 },
+            ];
+
+            fields.forEach(({ id, errId, test }) => {
+                const val = document.getElementById(id).value;
+                const err = document.getElementById(errId);
+                if (!test(val)) {
+                    err.classList.add('visible');
+                    document.getElementById(id).classList.add('error');
+                    valid = false;
+                } else {
+                    err.classList.remove('visible');
+                    document.getElementById(id).classList.remove('error');
+                }
+            });
+
+            // Confirm password
+            const pass = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirmPassword').value;
+            if (pass !== confirm) {
+                document.getElementById('confirmPassError').classList.add('visible');
+                document.getElementById('regConfirmPassword').classList.add('error');
+                valid = false;
+            } else {
+                document.getElementById('confirmPassError').classList.remove('visible');
+                document.getElementById('regConfirmPassword').classList.remove('error');
+            }
+
+            // Terms
+            if (!document.getElementById('agreeTerms').checked) {
+                document.getElementById('termsError').classList.add('visible');
+                valid = false;
+            } else {
+                document.getElementById('termsError').classList.remove('visible');
+            }
+
+            return valid;
+        }
+
+        function checkPasswordStrength(val) {
+            const el = document.getElementById('passStrength');
+            if (!val) { el.classList.remove('visible'); return; }
+            el.classList.add('visible');
+
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+
+            el.className = 'password-strength visible ' + (score <= 1 ? 'strength-weak' : score <= 2 ? 'strength-medium' : 'strength-strong');
+            el.querySelector('.strength-text').textContent = score <= 1 ? 'ضعيفة' : score <= 2 ? 'متوسطة' : 'قوية';
+        }
+
+        function showAlert(msg, type) {
+            const el = document.getElementById('authAlert');
+            el.style.display = 'block';
+            el.style.background = type === 'success' ? '#e8f5e9' : '#fce4ec';
+            el.style.color = type === 'success' ? '#2e7d32' : '#c62828';
+            el.style.border = `1px solid ${type === 'success' ? '#a5d6a7' : '#ef9a9a'}`;
+            el.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}" style="margin-left:6px;"></i>${msg}`;
+        }
+
+        function togglePass(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'far fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'far fa-eye';
+            }
+        }
+
+        function socialRegister(provider) {
+            showToast(`التسجيل عبر ${provider} قيد التطوير`, 'info');
+        }
+
+        // Redirect if already logged in
+        if (localStorage.getItem('token') || sessionStorage.getItem('token')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            localStorage.setItem('heiko_theme', isDark ? 'light' : 'dark');
+        }
+        (function(){
+            const saved = localStorage.getItem('heiko_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+</body>
+
+</html>

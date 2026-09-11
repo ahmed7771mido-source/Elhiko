@@ -1,0 +1,386 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تفاصيل المنتج - الهيكو</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/product.css" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+    <style>
+        .navbar-brand { text-decoration: none; display: inline-block; }
+        .heiko-logo-wrap { position:relative; width:60px; height:60px; display:flex; align-items:center; justify-content:center; }
+        .heiko-ring { position:absolute; inset:0; width:100%; height:100%; animation:heiko-spin 16s linear infinite; }
+        @keyframes heiko-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        .heiko-inner-logo { width:36px; height:36px; object-fit:contain; position:relative; z-index:1; border-radius:50%; }
+        .heiko-inner-text { width:36px; height:36px; background:var(--primary); border-radius:50%; display:none; align-items:center; justify-content:center; font-family:Georgia,serif; font-size:1.3rem; color:#fff; font-weight:700; position:relative; z-index:1; }
+    </style><link rel="stylesheet" href="/css/mobile.css" />
+<script>
+/* ===== Dark/Light Mode ===== */
+function toggleTheme() {
+    var html = document.documentElement;
+    var current = html.getAttribute('data-theme') || 'light';
+    var next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('heiko_theme', next);
+}
+/* Apply saved theme immediately */
+(function() {
+    var saved = localStorage.getItem('heiko_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">
+  <div class="heiko-logo-wrap">
+    <svg class="heiko-ring" viewBox="0 0 100 100">
+      <defs>
+        <path id="circle-path" d="M 50,50 m -32,0 a 32,32 0 1,1 64,0 a 32,32 0 1,1 -64,0"/>
+      </defs>
+      <text font-size="11.5" fill="var(--primary)" font-family="Georgia,serif" letter-spacing="3.5">
+        <textPath href="#circle-path">HEIKO ✦ PERFUMES ✦ ORIGINAL ✦ </textPath>
+      </text>
+    </svg>
+    <img src="/images/logo/heiko.png" alt="الهيكو" class="heiko-inner-logo"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+    <div class="heiko-inner-text" style="display:none;">H</div>
+  </div>
+</a>
+            <div class="nav-overlay" id="navOverlay"></div>
+                                                <ul class="navbar-nav" id="navbarNav">
+                <li><a href="/">الرئيسية</a></li>
+                <li><a href="/products.html">المنتجات</a></li>
+                <li><a href="/#offers-section">العروض</a></li>
+                <li><a href="#contact">تواصل معنا</a></li>
+            </ul>
+            <div class="navbar-actions">
+                <button class="nav-icon-btn" aria-label="بحث" onclick="window.location.href='/products.html'">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="nav-icon-btn" onclick="window.location.href='cart.html'" aria-label="سلة">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+                <button class="nav-icon-btn" id="userBtn" aria-label="حساب"><i class="fas fa-user"></i></button>
+                <button class="theme-toggle" id="themeToggle" title="تبديل الوضع" onclick="toggleTheme()">
+                    <i class="fas fa-moon icon-moon"></i>
+                    <i class="fas fa-sun icon-sun"></i>
+                </button>
+                <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="page-header">
+        <nav class="breadcrumb" id="breadcrumb">
+            <a href="/">الرئيسية</a>
+            <span class="sep">/</span>
+            <a href="/products.html">المنتجات</a>
+            <span class="sep">/</span>
+            <span id="breadcrumbProduct">...</span>
+        </nav>
+    </div>
+
+    <!-- ===== PRODUCT DETAIL ===== -->
+    <div class="product-detail-page">
+        <div class="container">
+
+            <!-- Loading state -->
+            <div id="productLoading" class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+
+            <!-- Product content -->
+            <div id="productContent" style="display:none;">
+                <div class="product-detail-layout">
+
+                    <!-- ===== GALLERY ===== -->
+                    <div class="product-gallery">
+                        <div class="gallery-main">
+                            <div class="gallery-badge-group" id="galleryBadges"></div>
+                            <img id="mainImage" src="" alt="" />
+                        </div>
+                        <div class="gallery-thumbnails" id="thumbnails"></div>
+                    </div>
+
+                    <!-- ===== INFO ===== -->
+                    <div class="product-detail-info">
+                        <div class="product-detail-brand" id="detailBrand"></div>
+                        <h1 class="product-detail-name" id="detailName"></h1>
+
+                        <div class="product-detail-rating">
+                            <span class="rating-stars-lg" id="detailStars"></span>
+                            <span class="rating-value" id="detailRatingVal"></span>
+                            <span class="rating-reviews" id="detailRatingCount"></span>
+                        </div>
+
+                        <div class="product-detail-price">
+                            <span class="detail-price-current" id="detailPrice"></span>
+                            <span class="detail-price-old" id="detailOldPrice" style="display:none;"></span>
+                            <span class="detail-price-save" id="detailDiscount" style="display:none;"></span>
+                        </div>
+
+                        <p class="product-detail-desc" id="detailDesc"></p>
+
+                        <!-- Size -->
+                        <div class="option-group">
+                            <div class="option-label">الحجم: <span id="selectedSize">50ml</span></div>
+                            <div class="size-options-lg" id="sizeOptions"></div>
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="option-group">
+                            <div class="option-label">الكمية</div>
+                            <div class="qty-control">
+                                <button class="qty-btn" id="qtyMinus"><i class="fas fa-minus"></i></button>
+                                <input type="number" class="qty-input" id="qtyInput" value="1" min="1" max="99" />
+                                <button class="qty-btn" id="qtyPlus"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Stock -->
+                        <div id="stockBadge"></div>
+
+                        <!-- CTA -->
+                        <div class="product-cta">
+                            <button class="btn btn-primary" style="flex:1;" id="addToCartBtn">
+                                <i class="fas fa-shopping-bag"></i> أضف للسلة
+                            </button>
+                            <button class="btn btn-dark" style="flex:1;" id="buyNowBtn">
+                                <i class="fas fa-bolt"></i> اشتري الآن
+                            </button>
+                            <button class="btn-wishlist" id="wishlistBtn" title="أضف للمفضلة">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+
+                        <!-- Meta -->
+                        <div class="product-meta">
+                            <div class="meta-row">
+                                <span class="meta-key">الكود:</span>
+                                <span class="meta-val" id="metaSku"></span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-key">الدار:</span>
+                                <span class="meta-val" id="metaBrand"></span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-key">الفئة:</span>
+                                <span class="meta-val" id="metaCategory"></span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-key">المشاركة:</span>
+                                <span class="meta-val" style="display:flex;gap:8px;">
+                                    <a href="#" onclick="shareProduct('whatsapp')" style="color:var(--primary);"><i
+                                            class="fab fa-whatsapp fa-lg"></i></a>
+                                    <a href="#" onclick="shareProduct('twitter')" style="color:var(--primary);"><i
+                                            class="fab fa-twitter fa-lg"></i></a>
+                                    <a href="#" onclick="copyLink()" style="color:var(--primary);"><i
+                                            class="fas fa-link fa-lg"></i></a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== TABS ===== -->
+                <div class="product-tabs-section">
+                    <nav class="tabs-nav">
+                        <button class="tab-btn active" data-tab="description">الوصف</button>
+                        <button class="tab-btn" data-tab="notes">نوتات العطر</button>
+                        <button class="tab-btn" data-tab="reviews">التقييمات</button>
+                        <button class="tab-btn" data-tab="shipping">الشحن والإرجاع</button>
+                    </nav>
+
+                    <!-- Description Tab -->
+                    <div class="tab-panel active" id="tab-description">
+                        <div style="max-width:720px;">
+                            <p id="fullDescription" style="font-size:0.95rem;line-height:2;color:var(--text-light);">
+                            </p>
+                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px;"
+                                id="detailSpecs"></div>
+                        </div>
+                    </div>
+
+                    <!-- Notes Tab -->
+                    <div class="tab-panel" id="tab-notes">
+                        <div class="scent-notes" id="scentNotes">
+                            <div class="scent-note">
+                                <div class="note-icon">🌸</div>
+                                <div class="note-type">النوتة الرأسية</div>
+                                <div class="note-name" id="noteTop">-</div>
+                                <div class="note-desc">أول ما تشمه عند الرش</div>
+                            </div>
+                            <div class="scent-note">
+                                <div class="note-icon">🌿</div>
+                                <div class="note-type">النوتة القلبية</div>
+                                <div class="note-name" id="noteHeart">-</div>
+                                <div class="note-desc">الجوهر الرئيسي للعطر</div>
+                            </div>
+                            <div class="scent-note">
+                                <div class="note-icon">🪵</div>
+                                <div class="note-type">النوتة الأساسية</div>
+                                <div class="note-name" id="noteBase">-</div>
+                                <div class="note-desc">يبقى على الجلد أطول</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews Tab -->
+                    <div class="tab-panel" id="tab-reviews">
+                        <div class="reviews-summary">
+                            <div class="rating-big">
+                                <div class="rating-number" id="avgRating">0.0</div>
+                                <div style="color:#f59e0b;font-size:1.2rem;margin-bottom:6px;" id="avgStars">☆☆☆☆☆</div>
+                                <div style="font-size:0.8rem;color:var(--text-light);" id="totalReviews">0 تقييم</div>
+                            </div>
+                            <div class="rating-bars" id="ratingBars">
+                                <div class="rating-bar-row">
+                                    <span class="bar-label">5 ★</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:70%"></div>
+                                    </div>
+                                    <span class="bar-pct">70%</span>
+                                </div>
+                                <div class="rating-bar-row">
+                                    <span class="bar-label">4 ★</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:20%"></div>
+                                    </div>
+                                    <span class="bar-pct">20%</span>
+                                </div>
+                                <div class="rating-bar-row">
+                                    <span class="bar-label">3 ★</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:7%"></div>
+                                    </div>
+                                    <span class="bar-pct">7%</span>
+                                </div>
+                                <div class="rating-bar-row">
+                                    <span class="bar-label">2 ★</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:2%"></div>
+                                    </div>
+                                    <span class="bar-pct">2%</span>
+                                </div>
+                                <div class="rating-bar-row">
+                                    <span class="bar-label">1 ★</span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:1%"></div>
+                                    </div>
+                                    <span class="bar-pct">1%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="review-list" id="reviewList"></div>
+
+                        <!-- Add Review -->
+                        <div class="admin-card" style="margin-top:28px;">
+                            <div class="admin-card-header"><span class="admin-card-title">أضف تقييمك</span></div>
+                            <div class="admin-card-body">
+                                <div class="form-group">
+                                    <label>تقييمك</label>
+                                    <div style="display:flex;gap:8px;font-size:1.5rem;cursor:pointer;" id="starRating">
+                                        <span data-v="1" style="color:#ddd;">★</span>
+                                        <span data-v="2" style="color:#ddd;">★</span>
+                                        <span data-v="3" style="color:#ddd;">★</span>
+                                        <span data-v="4" style="color:#ddd;">★</span>
+                                        <span data-v="5" style="color:#ddd;">★</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>تعليقك</label>
+                                    <textarea class="form-control" id="reviewText" rows="3"
+                                        placeholder="شاركنا تجربتك مع هذا العطر..."></textarea>
+                                </div>
+                                <button class="btn btn-primary" onclick="submitReview()">إرسال التقييم</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Tab -->
+                    <div class="tab-panel" id="tab-shipping">
+                        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:700px;">
+                            <div class="admin-card" style="box-shadow:none;border:1.5px solid var(--border);">
+                                <div class="admin-card-body">
+                                    <div style="font-size:2rem;margin-bottom:10px;">🚚</div>
+                                    <h4 style="margin-bottom:8px;color:var(--secondary);">الشحن العادي</h4>
+                                    <p style="font-size:0.85rem;color:var(--text-light);line-height:1.7;">خلال 3-5 أيام
+                                        عمل لجميع محافظات مصر.</p>
+                                </div>
+                            </div>
+                            <div class="admin-card" style="box-shadow:none;border:1.5px solid var(--border);">
+                                <div class="admin-card-body">
+                                    <div style="font-size:2rem;margin-bottom:10px;">⚡</div>
+                                    <h4 style="margin-bottom:8px;color:var(--secondary);">الشحن السريع</h4>
+                                    <p style="font-size:0.85rem;color:var(--text-light);line-height:1.7;">التوصيل في نفس
+                                        اليوم أو اليوم التالي داخل القاهرة والجيزة.</p>
+                                </div>
+                            </div>
+                            <div class="admin-card" style="box-shadow:none;border:1.5px solid var(--border);">
+                                <div class="admin-card-body">
+                                    <div style="font-size:2rem;margin-bottom:10px;">↩️</div>
+                                    <h4 style="margin-bottom:8px;color:var(--secondary);">سياسة الإرجاع</h4>
+                                    <p style="font-size:0.85rem;color:var(--text-light);line-height:1.7;">يمكن إرجاع
+                                        المنتج خلال 14 يوماً من الاستلام شرط أن يكون في حالته الأصلية وغير مستخدم.</p>
+                                </div>
+                            </div>
+                            <div class="admin-card" style="box-shadow:none;border:1.5px solid var(--border);">
+                                <div class="admin-card-body">
+                                    <div style="font-size:2rem;margin-bottom:10px;">🔒</div>
+                                    <h4 style="margin-bottom:8px;color:var(--secondary);">ضمان الأصالة</h4>
+                                    <p style="font-size:0.85rem;color:var(--text-light);line-height:1.7;">جميع منتجاتنا
+                                        أصلية 100%. نضمن الجودة أو نسترد أموالك كاملة.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== RELATED PRODUCTS ===== -->
+                <div class="related-section">
+                    <div class="section-header">
+                        <h2 class="section-title" style="text-align:right;">منتجات قد تعجبك</h2>
+                        <div class="gold-line" style="margin:0.5rem 0;"></div>
+                    </div>
+                    <div class="products-grid" id="relatedProducts">
+                        <div class="loading-spinner" style="grid-column:1/-1;">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error state -->
+            <div id="productError" class="empty-state" style="display:none;">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>المنتج غير موجود</h3>
+                <p>عذراً، لم نتمكن من العثور على هذا المنتج</p>
+                <a href="/products.html" class="btn btn-primary">العودة للمنتجات</a>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/product-details.js"></script>
+</body>
+
+</html>

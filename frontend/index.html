@@ -1,0 +1,561 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>الهيكو - عطور فاخرة</title>
+    <meta name="description"
+        content="اكتشف مجموعتنا الفاخرة من العطور العالمية والمحلية. أرقى العطور بأفضل الأسعار في مصر." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+    <style>
+        /* ===== HEIKO LOGO ===== */
+        .navbar-brand {
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .heiko-logo-wrap {
+            position: relative;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* الدايرة الدوارة */
+        .heiko-ring {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            animation: heiko-spin 12s linear infinite;
+        }
+
+        @keyframes heiko-spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* الصورة جوه الدايرة */
+        .heiko-inner-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            position: relative;
+            z-index: 1;
+            border-radius: 50%;
+            background: rgba(201, 169, 110, 0.08);
+        }
+
+        /* Fallback لو الصورة مش موجودة */
+        .heiko-inner-text {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(201, 169, 110, 0.2), transparent);
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            border: 1.5px solid rgba(201, 169, 110, 0.4);
+        }
+
+        /* النص "الهيكو" بجانب الدايرة */
+        .heiko-brand-text {
+            margin-right: 10px;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .heiko-brand-text .brand-en {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: #fff;
+            letter-spacing: 3px;
+            font-weight: 700;
+        }
+
+        .heiko-brand-text .brand-ar {
+            font-size: 0.65rem;
+            color: var(--primary);
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+    </style>
+    <link rel="stylesheet" href="/css/mobile.css" />
+    <script>
+        /* ===== Dark/Light Mode ===== */
+        function toggleTheme() {
+            var html = document.documentElement;
+            var current = html.getAttribute('data-theme') || 'light';
+            var next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('heiko_theme', next);
+        }
+        /* Apply saved theme immediately */
+        (function () {
+            var saved = localStorage.getItem('heiko_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">
+                <div class="heiko-logo-wrap">
+                    <svg class="heiko-ring" viewBox="0 0 100 100">
+                        <defs>
+                            <path id="circle-path" d="M 50,50 m -34,0 a 34,34 0 1,1 68,0 a 34,34 0 1,1 -68,0" />
+                        </defs>
+                        <text font-size="10.5" fill="#c9a96e" font-family="Georgia,serif" letter-spacing="4">
+                            <textPath href="#circle-path">HEIKO ✦ PERFUMES ✦ ORIGINAL ✦ </textPath>
+                        </text>
+                    </svg>
+                    <img src="/images/logo/heiko.png" alt="الهيكو" class="heiko-inner-logo"
+                        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+                    <div class="heiko-inner-text">H</div>
+                </div>
+                <div class="heiko-brand-text">
+                    <span class="brand-en">HEIKO</span>
+                    <span class="brand-ar">الهيكو · عطور أصلية</span>
+                </div>
+            </a>
+
+            <div class="nav-overlay" id="navOverlay"></div>
+                                                <ul class="navbar-nav" id="navbarNav">
+                <li><a href="/">الرئيسية</a></li>
+                <li><a href="/products.html">المنتجات</a></li>
+                <li><a href="/#offers-section">العروض</a></li>
+                <li><a href="#contact">تواصل معنا</a></li>
+            </ul>
+
+            <div class="navbar-actions">
+                <button class="nav-icon-btn" onclick="window.location.href='products.html'" aria-label="بحث">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="nav-icon-btn" id="cartBtn" onclick="window.location.href='cart.html'"
+                    aria-label="سلة التسوق">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+                <button class="nav-icon-btn" id="userBtn" aria-label="الحساب">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="theme-toggle" id="themeToggle" title="تبديل الوضع" onclick="toggleTheme()">
+                    <i class="fas fa-moon icon-moon"></i>
+                    <i class="fas fa-sun icon-sun"></i>
+                </button>
+                <button class="hamburger" id="hamburger" aria-label="القائمة">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-star"></i>
+                    <span>أفضل العطور الفاخرة</span>
+                </div>
+                <h1 class="hero-title">
+                    اكتشف عالم<br />
+                    <span>العطور الفاخرة</span>
+                </h1>
+                <p class="hero-desc">
+                    تشكيلة حصرية من أرقى عطور العالم — اختار عطرك المفضل من مجموعة متنوعة
+                    من العطور الأصلية بأسعار تناسب الجميع وتوصيل سريع في جميع أنحاء مصر.
+                </p>
+                <div class="hero-buttons">
+                    <a href="/products.html" class="btn btn-primary">
+                        <i class="fas fa-shopping-bag"></i> تسوق الآن
+                    </a>
+                    <a href="#featured-section" class="btn btn-outline">
+                        <i class="fas fa-compass"></i> استكشف المجموعة
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <h3>500+</h3>
+                        <p>عطر متاح</p>
+                    </div>
+                    <div class="hero-stat">
+                        <h3>100%</h3>
+                        <p>منتجات أصلية</p>
+                    </div>
+                    <div class="hero-stat">
+                        <h3>توصيل</h3>
+                        <p>لكل مصر</p>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="hero-img-wrapper" style="display:flex;align-items:center;justify-content:center;">
+                    <img src="/images/logo/heiko.png" alt="الهيكو"
+                        style="max-width:300px;width:100%;border-radius:8px;filter:drop-shadow(0 20px 40px rgba(201,169,110,0.3));"
+                        onerror="this.outerHTML='<div style=\'text-align:center;\'><div style=\'font-family:var(--font-heading);font-size:4rem;color:var(--primary);line-height:1;\'>H</div><div style=\'font-family:var(--font-heading);font-size:2.5rem;color:#fff;letter-spacing:6px;\'>HEIKO</div><div style=\'font-size:0.75rem;color:rgba(255,255,255,0.5);letter-spacing:3px;margin-top:6px;\'>PERFUMES · ORIGINAL FRAGRANCES</div></div>'" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURES STRIP ===== -->
+    <section class="features-strip">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-shipping-fast"></i></div>
+                    <div>
+                        <h4>شحن سريع</h4>
+                        <p>توصيل لجميع محافظات مصر</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-certificate"></i></div>
+                    <div>
+                        <h4>منتجات أصلية 100%</h4>
+                        <p>مضمون الأصالة والجودة</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-undo"></i></div>
+                    <div>
+                        <h4>إرجاع مجاني</h4>
+                        <p>خلال 14 يوم من الشراء</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                    <div>
+                        <h4>دعم على مدار الساعة</h4>
+                        <p>فريق متاح 24/7 لمساعدتك</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURED PRODUCTS ===== -->
+    <section class="section" id="featured-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">المنتجات المميزة</h2>
+                <div class="gold-line"></div>
+                <p class="section-subtitle">اختيارات مميزة من أفخر العطور العالمية</p>
+            </div>
+        </div>
+
+        <div class="products-grid" id="featuredProducts">
+            <!-- Populated by JS -->
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="/products.html" class="btn btn-outline">
+                عرض جميع المنتجات <i class="fas fa-arrow-left"></i>
+            </a>
+        </div>
+        </div>
+    </section>
+
+    <!-- ===== OFFERS BANNER ===== -->
+    <section class="section" style="background:#f5f0e8;padding:60px 0;" id="offers-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">العروض الحصرية</h2>
+                <div class="gold-line"></div>
+                <p class="section-subtitle">أفضل العروض والخصومات المتاحة</p>
+            </div>
+            <div id="offersContainer">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== NEW ARRIVALS ===== -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">وصل حديثاً</h2>
+                <div class="gold-line"></div>
+                <p class="section-subtitle">أحدث الإضافات إلى مجموعتنا</p>
+            </div>
+            <div class="products-grid" id="newArrivals">
+                <div class="empty-state" style="grid-column:1/-1;">
+                    <i class="fas fa-box-open" style="color:var(--primary-light);"></i>
+                    <h3>لا توجد منتجات متاحة حالياً</h3>
+                    <p>تابعنا قريباً لاكتشاف أحدث العطور</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg"></span>
+    </div>
+
+    <script src="/js/main.js"></script>
+    <script>
+        // Newsletter
+        function subscribeNewsletter() {
+            const email = document.getElementById('newsletterEmail').value.trim();
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showToast('يرجى إدخال بريد إلكتروني صحيح', 'error');
+                return;
+            }
+            showToast('تم الاشتراك في النشرة البريدية بنجاح!', 'success');
+            document.getElementById('newsletterEmail').value = '';
+        }
+
+        // Category tabs - removed, use navbar links instead
+
+        // Load featured products from API
+        async function loadFeaturedProducts(cat = 'all') {
+            const container = document.getElementById('featuredProducts');
+            container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
+            try {
+                let url = '/api/products?featured=true&limit=8';
+                if (cat !== 'all') url += `&category=${cat}`;
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data.products && data.products.length) {
+                    renderProducts(container, data.products);
+                } else {
+                    showEmpty(container);
+                }
+            } catch {
+                showEmpty(container);
+            }
+        }
+
+        function showEmpty(container) {
+            container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+                <i class="fas fa-spray-can" style="color:var(--primary-light);"></i>
+                <h3>لا توجد منتجات متاحة حالياً</h3>
+                <p>تابعنا قريباً لاكتشاف أحدث العطور</p>
+            </div>`;
+        }
+
+        function renderProducts(container, products) {
+            container.innerHTML = products.map(p => {
+                const discount = p.old_price ? Math.round((1 - p.price / p.old_price) * 100) : null;
+                const img = p.image || `https://placehold.co/300x400/f5f0e8/c9a96e?text=${encodeURIComponent(p.brand || 'عطر')}`;
+                return `
+                <div class="product-card">
+                    <div class="product-img">
+                        <a href="product-details.html?id=${p.id}">
+                            <img src="${img}" alt="${p.name}" loading="lazy"
+                                onerror="this.src='https://placehold.co/300x400/f5f0e8/c9a96e?text=عطر'" />
+                        </a>
+                        <div class="product-badges">
+                            ${p.is_new ? '<span class="badge badge-new">جديد</span>' : ''}
+                            ${discount ? `<span class="badge badge-sale">-${discount}%</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-brand">${p.brand || ''}</div>
+                        <h3 class="product-name"><a href="product-details.html?id=${p.id}">${p.name}</a></h3>
+                        <div class="product-price">
+                            <span class="price-current">${p.price} ج.م</span>
+                            ${p.old_price ? `<span class="price-old">${p.old_price} ج.م</span>` : ''}
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCart(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price}, '${img}')">
+                            <i class="fas fa-shopping-bag"></i> أضف للسلة
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Load offers from API
+        async function loadOffers() {
+            const container = document.getElementById('offersContainer');
+            if (!container) return;
+            try {
+                const res = await fetch('/api/offers?status=active');
+                const data = await res.json();
+                if (data.offers && data.offers.length) {
+                    renderOffers(container, data.offers);
+                } else {
+                    container.innerHTML = `<div class="empty-state">
+                        <i class="fas fa-tags"></i>
+                        <h3>لا توجد عروض حالياً</h3>
+                        <p>تابعنا لمعرفة أحدث العروض</p>
+                    </div>`;
+                }
+            } catch {
+                container.innerHTML = `<div class="empty-state">
+                    <i class="fas fa-tags"></i>
+                    <h3>لا توجد عروض حالياً</h3>
+                    <p>تابعنا لمعرفة أحدث العروض</p>
+                </div>`;
+            }
+        }
+
+        function renderOffers(container, offers) {
+            const active = offers.filter(o => o.status === 'active').slice(0, 6);
+            if (!active.length) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-tags"></i><h3>لا توجد عروض حالياً</h3></div>`;
+                return;
+            }
+            container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;">` +
+                active.map(o => {
+                    // استخرج السعر بكل الطرق الممكنة
+                    const orig = parseFloat(o.original_price) || 0;
+                    const final = parseFloat(o.final_price) || orig;
+                    const hasPrice = final > 0;
+
+                    // نوع الخصم
+                    const disc = o.type === 'percent' ? `خصم ${o.value}%`
+                        : o.type === 'fixed' ? `خصم ${o.value} ج.م`
+                            : 'عرض خاص';
+
+                    // الصورة — تدعم base64 وURL عادي
+                    const img = o.image || o.img || '';
+
+                    // encode safe name for onclick
+                    const safeName = (o.name || 'عرض').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    const safeImage = img.startsWith('data:') ? '' : img; // base64 مش آمن في onclick
+
+                    return `
+                    <div style="background:#fff;border-radius:16px;overflow:hidden;
+                                box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1px solid rgba(201,169,110,0.12);
+                                transition:transform 0.3s,box-shadow 0.3s;"
+                         onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 12px 36px rgba(0,0,0,0.14)'"
+                         onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.08)'">
+
+                        <!-- صورة العرض -->
+                        <div style="position:relative;background:linear-gradient(135deg,#1a1a2e,#16213e);
+                                    height:220px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                            ${img
+                            ? `<img src="${img}" alt="${safeName}"
+                                       style="width:100%;height:100%;object-fit:cover;"
+                                       onerror="this.parentElement.innerHTML='<div style=\\'display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,0.4);padding:20px;\\'><i class=\\'fas fa-tag\\' style=\\'font-size:3rem;color:#c9a96e;\\'></i><span style=\\'font-size:0.8rem;\\'>صورة العرض</span></div>'" />`
+                            : `<div style="display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,0.4);">
+                                     <i class="fas fa-tag" style="font-size:3rem;color:#c9a96e;"></i>
+                                     <span style="font-size:0.82rem;">أضف صورة للعرض</span>
+                                   </div>`}
+
+                            <!-- شارة الخصم -->
+                            <span style="position:absolute;top:12px;right:12px;background:var(--primary);color:#fff;
+                                         padding:5px 14px;border-radius:20px;font-size:0.78rem;font-weight:700;
+                                         box-shadow:0 2px 8px rgba(201,169,110,0.5);">
+                                🔥 ${disc}
+                            </span>
+                            ${o.end_date ? `<span style="position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.65);
+                                color:#fff;padding:3px 10px;border-radius:10px;font-size:0.7rem;">
+                                ⏰ ينتهي: ${o.end_date}</span>` : ''}
+                        </div>
+
+                        <!-- بيانات العرض -->
+                        <div style="padding:16px 18px 18px;">
+                            <h3 style="font-family:var(--font-heading);font-size:1.05rem;color:var(--secondary);
+                                       margin-bottom:6px;line-height:1.3;">${o.name}</h3>
+                            ${o.desc || o.description
+                            ? `<p style="font-size:0.82rem;color:var(--text-light);margin-bottom:10px;line-height:1.6;">${o.desc || o.description}</p>`
+                            : ''}
+
+                            <!-- السعر -->
+                            ${hasPrice ? `
+                            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+                                <span style="font-family:var(--font-heading);font-size:1.5rem;font-weight:700;color:var(--secondary);">
+                                    ${final.toLocaleString('ar-EG')} ج.م
+                                </span>
+                                ${orig && orig !== final ? `
+                                <span style="font-size:0.85rem;text-decoration:line-through;color:var(--text-light);">
+                                    ${orig.toLocaleString('ar-EG')} ج.م
+                                </span>
+                                <span style="background:#fce4ec;color:#c62828;border-radius:10px;padding:2px 8px;font-size:0.72rem;font-weight:700;">
+                                    وفّر ${(orig - final).toLocaleString('ar-EG')} ج.م
+                                </span>` : ''}
+                            </div>` : `
+                            <div style="margin-bottom:12px;">
+                                <span style="font-size:0.88rem;color:var(--text-light);">استخدم الكود للحصول على الخصم</span>
+                            </div>`}
+
+                            <!-- كود الخصم -->
+                            ${o.code ? `
+                            <div style="background:#faf6ef;border:1.5px dashed var(--primary);padding:8px 12px;
+                                        border-radius:8px;margin-bottom:14px;
+                                        display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                                <span style="font-size:0.78rem;color:var(--text-light);">كود الخصم</span>
+                                <strong style="color:var(--primary-dark);letter-spacing:2px;font-size:0.92rem;">${o.code}</strong>
+                                <button onclick="navigator.clipboard.writeText('${o.code}').then(()=>showToast('تم نسخ الكود ✓','success'))"
+                                    style="background:var(--primary);color:#fff;border:none;border-radius:6px;
+                                           padding:4px 10px;font-size:0.72rem;cursor:pointer;font-family:var(--font-body);
+                                           white-space:nowrap;">
+                                    نسخ 📋
+                                </button>
+                            </div>` : ''}
+
+                            <!-- زرار الشراء -->
+                            <button onclick="buyOffer(${o.id},'${safeName}',${final},'${safeImage}')"
+                                style="width:100%;padding:12px;
+                                       background:linear-gradient(135deg,var(--secondary),#16213e);
+                                       color:#fff;border:none;border-radius:10px;
+                                       font-size:0.92rem;font-weight:600;cursor:pointer;
+                                       display:flex;align-items:center;justify-content:center;gap:8px;
+                                       transition:opacity 0.2s,transform 0.2s;font-family:var(--font-body);"
+                                onmouseover="this.style.opacity='0.88';this.style.transform='scale(1.01)'"
+                                onmouseout="this.style.opacity='1';this.style.transform=''">
+                                <i class="fas fa-shopping-bag"></i>
+                                ${hasPrice ? `أضف للسلة — ${final.toLocaleString('ar-EG')} ج.م` : 'تسوق الآن'}
+                            </button>
+                        </div>
+                    </div>`;
+                }).join('') + `</div>`;
+        }
+
+        function buyOffer(id, name, price, img) {
+            if (price > 0) {
+                // أضف مباشرة للسلة
+                const cartId = -(id || Date.now());
+                addToCart(cartId, name, price, img || '', 'عرض خاص', 'الهيكو');
+            } else {
+                // لو مفيش سعر، روح لصفحة المنتجات
+                window.location.href = '/products.html';
+            }
+        }
+
+        // Init
+        loadFeaturedProducts();
+        loadOffers();
+    </script>
+</body>
+
+</html>

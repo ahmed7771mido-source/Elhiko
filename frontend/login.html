@@ -1,0 +1,327 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تسجيل الدخول - الهيكو</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+<style>
+.heiko-logo-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.heiko-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: heiko-spin 18s linear infinite;
+}
+@keyframes heiko-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.heiko-inner-logo {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+}
+.heiko-inner-text {
+  width: 38px; height: 38px;
+  background: var(--primary);
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  font-family: Georgia, serif;
+  font-size: 1.4rem;
+  color: #fff;
+  z-index: 1;
+}
+</style>
+<link rel="stylesheet" href="/css/mobile.css" />
+</head>
+
+<body>
+
+    <div class="auth-page">
+        <div class="auth-card">
+
+            <!-- Logo -->
+            <div class="auth-logo" style="text-align:center;margin-bottom:8px;">
+                <img src="/images/logo/heiko.png" alt="الهيكو" style="height:70px;width:auto;object-fit:contain;"
+                    onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+                <span
+                    style="display:none;font-family:var(--font-heading);font-size:2rem;color:var(--secondary);">HEIKO<span
+                        style="color:var(--primary);">.</span></span>
+            </div>
+            <h2 class="auth-title">مرحباً بعودتك</h2>
+            <p class="auth-subtitle">سجّل دخولك للوصول إلى حسابك</p>
+
+            <!-- Alert -->
+            <div id="authAlert"
+                style="display:none;padding:12px 16px;border-radius:var(--radius-sm);font-size:0.85rem;margin-bottom:16px;">
+            </div>
+
+            <!-- Form -->
+            <form id="loginForm" novalidate>
+
+                <div class="form-group">
+                    <label for="loginEmail">البريد الإلكتروني</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="example@email.com"
+                            autocomplete="email" required />
+                    </div>
+                    <span class="field-error" id="emailError">يرجى إدخال بريد إلكتروني صحيح</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">
+                        كلمة المرور
+                        <a href="#" onclick="showForgotPassword()"
+                            style="float:left;font-size:0.78rem;color:var(--primary);font-weight:400;">نسيت كلمة
+                            المرور؟</a>
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="••••••••"
+                            autocomplete="current-password" required />
+                        <button type="button" class="toggle-password" onclick="togglePass('loginPassword', this)"
+                            aria-label="إظهار كلمة المرور">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                    <span class="field-error" id="passError">كلمة المرور مطلوبة</span>
+                </div>
+
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                    <label class="checkbox-item"
+                        style="cursor:pointer;font-size:0.85rem;gap:8px;display:flex;align-items:center;">
+                        <input type="checkbox" id="rememberMe"
+                            style="accent-color:var(--primary);width:15px;height:15px;" />
+                        تذكرني
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </button>
+            </form>
+
+            <div class="auth-divider">أو</div>
+
+            <!-- Social Login -->
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <button class="btn btn-block"
+                    style="border:1.5px solid var(--border);color:var(--text);background:#fff;font-size:0.88rem;"
+                    onclick="socialLogin('google')">
+                    <img src="https://www.google.com/favicon.ico" alt="Google" style="width:18px;height:18px;" />
+                    الدخول عبر Google
+                </button>
+                <button class="btn btn-block"
+                    style="border:1.5px solid var(--border);color:var(--text);background:#fff;font-size:0.88rem;"
+                    onclick="socialLogin('twitter')">
+                    <i class="fab fa-twitter" style="color:#1DA1F2;"></i>
+                    الدخول عبر Twitter
+                </button>
+            </div>
+
+            <div class="auth-footer">
+                ليس لديك حساب؟ <a href="/register.html">إنشاء حساب جديد</a>
+            </div>
+
+            <div style="text-align:center;margin-top:12px;">
+                <a href="/" style="font-size:0.82rem;color:var(--text-light);">
+                    <i class="fas fa-arrow-right" style="margin-left:4px;"></i> العودة للمتجر
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal-overlay" id="forgotModal">
+        <div class="modal" style="max-width:420px;">
+            <div class="modal-header">
+                <h3 class="modal-title">استعادة كلمة المرور</h3>
+                <button class="modal-close" onclick="closeForgotModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:0.88rem;color:var(--text-light);margin-bottom:16px;">
+                    أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.
+                </p>
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" class="form-control" id="forgotEmail" placeholder="example@email.com" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline btn-sm" onclick="closeForgotModal()">إلغاء</button>
+                <button class="btn btn-primary btn-sm" onclick="sendResetLink()">إرسال الرابط</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        // Login form submit
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            if (!validateLoginForm()) return;
+
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التسجيل...';
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const remember = document.getElementById('rememberMe').checked;
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    const storage = remember ? localStorage : sessionStorage;
+                    storage.setItem('token', data.token);
+                    storage.setItem('user', JSON.stringify(data.user));
+                    showAlert('تم تسجيل الدخول بنجاح!', 'success');
+                    setTimeout(() => {
+                        const redirect = new URLSearchParams(location.search).get('redirect') || '/';
+                        const user = data.user;
+                        window.location.href = user?.role === 'admin' ? '/admin/' : redirect;
+                    }, 600);
+                } else {
+                    showAlert(data.message || 'البريد الإلكتروني أو كلمة المرور غير صحيحة', 'error');
+                }
+            } catch {
+                // fallback لو السيرفر مش شغال
+                showAlert('تعذّر الاتصال بالسيرفر، تأكد أن البيك إند شغال', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
+            }
+        });
+
+        function validateLoginForm() {
+            let valid = true;
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value;
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                document.getElementById('emailError').classList.add('visible');
+                document.getElementById('loginEmail').classList.add('error');
+                valid = false;
+            } else {
+                document.getElementById('emailError').classList.remove('visible');
+                document.getElementById('loginEmail').classList.remove('error');
+            }
+
+            if (pass.length < 1) {
+                document.getElementById('passError').classList.add('visible');
+                document.getElementById('loginPassword').classList.add('error');
+                valid = false;
+            } else {
+                document.getElementById('passError').classList.remove('visible');
+                document.getElementById('loginPassword').classList.remove('error');
+            }
+            return valid;
+        }
+
+        function showAlert(msg, type) {
+            const el = document.getElementById('authAlert');
+            el.style.display = 'block';
+            el.style.background = type === 'success' ? '#e8f5e9' : '#fce4ec';
+            el.style.color = type === 'success' ? '#2e7d32' : '#c62828';
+            el.style.border = `1px solid ${type === 'success' ? '#a5d6a7' : '#ef9a9a'}`;
+            el.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}" style="margin-left:6px;"></i>${msg}`;
+        }
+
+        function showForgotPassword() {
+            document.getElementById('forgotModal').classList.add('open');
+        }
+        function closeForgotModal() {
+            document.getElementById('forgotModal').classList.remove('open');
+        }
+        async function sendResetLink() {
+            const email = document.getElementById('forgotEmail').value.trim();
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showToast('أدخل بريداً إلكترونياً صحيحاً', 'error');
+                return;
+            }
+            const btn = document.querySelector('#forgotModal .btn-primary');
+            if (btn) { btn.disabled = true; btn.textContent = 'جاري الإرسال...'; }
+            try {
+                await fetch('/api/auth/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+            } catch { }
+            closeForgotModal();
+            showToast('إذا كان البريد مسجّلاً، ستصلك رسالة قريباً', 'success');
+            if (btn) { btn.disabled = false; btn.textContent = 'إرسال الرابط'; }
+        }
+
+        function socialLogin(provider) {
+            showToast(`الدخول عبر ${provider} قيد التطوير`, 'info');
+        }
+
+        function togglePass(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'far fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'far fa-eye';
+            }
+        }
+
+        // Redirect if already logged in
+        if (localStorage.getItem('token') || sessionStorage.getItem('token')) {
+            const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
+            if (user.role === 'admin') window.location.href = '/admin/index.html';
+            else window.location.href = 'index.html';
+        }
+    </script>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            localStorage.setItem('heiko_theme', isDark ? 'light' : 'dark');
+        }
+        (function(){
+            const saved = localStorage.getItem('heiko_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+</body>
+
+</html>

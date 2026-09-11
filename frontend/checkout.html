@@ -1,0 +1,522 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>إتمام الطلب - الهيكو</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+    <style>
+        .checkout-page {
+            padding: 40px 0 80px;
+        }
+
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .checkout-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .checkout-card-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--secondary);
+            color: #fff;
+        }
+
+        .checkout-card-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .checkout-card-body {
+            padding: 24px;
+        }
+
+        .checkout-form label {
+            display: block;
+            font-size: 0.83rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 6px;
+        }
+
+        .checkout-form .form-control {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            color: var(--text);
+            background: var(--bg);
+            transition: var(--transition);
+            font-family: var(--font-body);
+            outline: none;
+        }
+
+        .checkout-form .form-control:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.12);
+        }
+
+        .checkout-form select.form-control {
+            cursor: pointer;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        /* COD badge */
+        .cod-badge {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: #f0faf0;
+            border: 1.5px solid var(--success);
+            border-radius: var(--radius-sm);
+            margin-bottom: 20px;
+        }
+
+        .cod-badge i {
+            font-size: 1.6rem;
+            color: var(--success);
+        }
+
+        .cod-badge h4 {
+            font-size: 0.95rem;
+            color: var(--secondary);
+            margin-bottom: 2px;
+        }
+
+        .cod-badge p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Summary card */
+        .order-summary-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: 24px;
+            position: sticky;
+            top: 90px;
+        }
+
+        .os-title {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .os-items {
+            max-height: 260px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+        }
+
+        .os-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 0.85rem;
+        }
+
+        .os-item:last-child {
+            border-bottom: none;
+        }
+
+        .os-item-img {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            background: #f5f0e8;
+            flex-shrink: 0;
+        }
+
+        .os-item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .os-item-name {
+            flex: 1;
+            font-weight: 500;
+            color: var(--secondary);
+        }
+
+        .os-item-qty {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .os-item-price {
+            font-weight: 700;
+            color: var(--secondary);
+            white-space: nowrap;
+        }
+
+        .os-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid var(--border);
+            padding-top: 14px;
+            margin-top: 6px;
+            font-weight: 700;
+        }
+
+        .os-total-row .lbl {
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .os-total-row .val {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            color: var(--secondary);
+        }
+
+        .place-order-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 16px;
+            transition: var(--transition);
+            font-family: var(--font-body);
+        }
+
+        .place-order-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .place-order-btn:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Success */
+        .order-success {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #e8f5e9;
+            color: var(--success);
+            font-size: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <style>
+        .navbar-brand { text-decoration: none; display: inline-block; }
+        .heiko-logo-wrap { position:relative; width:60px; height:60px; display:flex; align-items:center; justify-content:center; }
+        .heiko-ring { position:absolute; inset:0; width:100%; height:100%; animation:heiko-spin 16s linear infinite; }
+        @keyframes heiko-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        .heiko-inner-logo { width:36px; height:36px; object-fit:contain; position:relative; z-index:1; border-radius:50%; }
+        .heiko-inner-text { width:36px; height:36px; background:var(--primary); border-radius:50%; display:none; align-items:center; justify-content:center; font-family:Georgia,serif; font-size:1.3rem; color:#fff; font-weight:700; position:relative; z-index:1; }
+    </style><link rel="stylesheet" href="/css/mobile.css" />
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="container" style="justify-content:space-between;display:flex;align-items:center;">
+            <a href="/" class="navbar-brand">
+  <div class="heiko-logo-wrap">
+    <svg class="heiko-ring" viewBox="0 0 100 100">
+      <defs>
+        <path id="circle-path" d="M 50,50 m -32,0 a 32,32 0 1,1 64,0 a 32,32 0 1,1 -64,0"/>
+      </defs>
+      <text font-size="11.5" fill="var(--primary)" font-family="Georgia,serif" letter-spacing="3.5">
+        <textPath href="#circle-path">HEIKO ✦ PERFUMES ✦ ORIGINAL ✦ </textPath>
+      </text>
+    </svg>
+    <img src="/images/logo/heiko.png" alt="الهيكو" class="heiko-inner-logo"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+    <div class="heiko-inner-text" style="display:none;">H</div>
+  </div>
+</a>
+            <div style="display:flex;align-items:center;gap:16px;">
+                <a href="/cart.html" style="color:#fff;font-size:0.88rem;display:flex;align-items:center;gap:6px;">
+                    <i class="fas fa-arrow-right"></i> العودة للسلة
+                </a>
+                <button class="nav-icon-btn" onclick="window.location.href='cart.html'" aria-label="سلة">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1>إتمام الطلب</h1>
+        <div class="breadcrumb">
+            <a href="/">الرئيسية</a>
+            <span class="sep">/</span>
+            <a href="/cart.html">السلة</a>
+            <span class="sep">/</span>
+            <span>إتمام الطلب</span>
+        </div>
+    </div>
+
+    <div class="checkout-page">
+        <div class="container">
+
+            <!-- Success -->
+            <div class="order-success" id="orderSuccess">
+                <div class="success-icon"><i class="fas fa-check"></i></div>
+                <h2 style="font-family:var(--font-heading);font-size:1.6rem;color:var(--secondary);margin-bottom:8px;">
+                    تم تأكيد طلبك!
+                </h2>
+                <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:6px;">
+                    رقم الطلب: <strong id="orderNumDisplay" style="color:var(--primary);">#000000</strong>
+                </p>
+                <p style="color:var(--text-light);font-size:0.88rem;margin-bottom:28px;">
+                    سيتواصل معك المندوب قريباً لتأكيد موعد التوصيل.
+                </p>
+                <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                    <a href="/" class="btn btn-primary">الرئيسية</a>
+                    <a href="/products.html" class="btn btn-outline">مواصلة التسوق</a>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div class="checkout-layout" id="checkoutForm">
+
+                <!-- LEFT -->
+                <div>
+
+                    <!-- Shipping -->
+                    <div class="checkout-card" style="margin-bottom:20px;">
+                        <div class="checkout-card-header">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h3>بيانات التوصيل</h3>
+                        </div>
+                        <div class="checkout-card-body checkout-form">
+
+                            <div class="form-group">
+                                <label>الاسم كامل <span style="color:var(--error)">*</span></label>
+                                <input type="text" class="form-control" id="firstName" placeholder="مثال: محمد أحمد"
+                                    autocomplete="name" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>رقم الموبايل <span style="color:var(--error)">*</span></label>
+                                <input type="tel" class="form-control" id="phone" placeholder="01XXXXXXXXX"
+                                    maxlength="11" oninput="validatePhoneInput(this)" autocomplete="tel" required />
+                                <div id="phoneError"
+                                    style="font-size:0.75rem;color:var(--error);margin-top:4px;display:none;">
+                                    <i class="fas fa-exclamation-circle"></i> رقم الموبايل يجب أن يكون 11 رقم ويبدأ بـ
+                                    01
+                                </div>
+                                <div id="phoneOk"
+                                    style="font-size:0.75rem;color:var(--success);margin-top:4px;display:none;">
+                                    <i class="fas fa-check-circle"></i> رقم صحيح ✓
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>العنوان بالتفصيل <span style="color:var(--error)">*</span></label>
+                                <input type="text" class="form-control" id="address"
+                                    placeholder="الشارع، رقم البيت، الحي" autocomplete="street-address" required />
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>المحافظة <span style="color:var(--error)">*</span></label>
+                                    <select class="form-control" id="city" required>
+                                        <option value="">اختر المحافظة</option>
+                                        <option value="cairo">القاهرة</option>
+                                        <option value="giza">الجيزة</option>
+                                        <option value="alexandria">الإسكندرية</option>
+                                        <option value="beni_suef">بني سويف</option>
+                                        <option value="fayoum">الفيوم</option>
+                                        <option value="minya">المنيا</option>
+                                        <option value="assiut">أسيوط</option>
+                                        <option value="sohag">سوهاج</option>
+                                        <option value="qena">قنا</option>
+                                        <option value="luxor">الأقصر</option>
+                                        <option value="aswan">أسوان</option>
+                                        <option value="red_sea">البحر الأحمر</option>
+                                        <option value="new_valley">الوادي الجديد</option>
+                                        <option value="matrouh">مطروح</option>
+                                        <option value="north_sinai">شمال سيناء</option>
+                                        <option value="south_sinai">جنوب سيناء</option>
+                                        <option value="port_said">بورسعيد</option>
+                                        <option value="suez">السويس</option>
+                                        <option value="ismailia">الإسماعيلية</option>
+                                        <option value="sharqia">الشرقية</option>
+                                        <option value="dakahlia">الدقهلية</option>
+                                        <option value="damietta">دمياط</option>
+                                        <option value="kafr_sheikh">كفر الشيخ</option>
+                                        <option value="gharbia">الغربية</option>
+                                        <option value="tanta">طنطا</option>
+                                        <option value="monufia">المنوفية</option>
+                                        <option value="qalyubia">القليوبية</option>
+                                        <option value="beheira">البحيرة</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>المنطقة / الحي</label>
+                                    <input type="text" class="form-control" id="region" placeholder="اسم الحي" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>ملاحظات للمندوب</label>
+                                <textarea class="form-control" id="notes" rows="2"
+                                    placeholder="أي تعليمات خاصة للتوصيل..."></textarea>
+                            </div>
+
+                            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:0.85rem;">
+                                <input type="checkbox" id="saveAddress"
+                                    style="accent-color:var(--primary);width:15px;height:15px;" />
+                                حفظ البيانات للطلبات القادمة
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Payment -->
+                    <div class="checkout-card">
+                        <div class="checkout-card-header">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <h3>طريقة الدفع</h3>
+                        </div>
+                        <div class="checkout-card-body">
+                            <div class="cod-badge">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <div>
+                                    <h4>الدفع عند الاستلام</h4>
+                                    <p>ادفع كاش لما المندوب يوصلك</p>
+                                </div>
+                            </div>
+                            <p style="font-size:0.82rem;color:var(--text-light);text-align:center;">
+                                <i class="fas fa-shield-alt" style="color:var(--success);margin-left:4px;"></i>
+                                طلبك محمي — لن يُحصّل أي مبلغ قبل الاستلام
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT: Summary -->
+                <div class="order-summary-card">
+                    <div class="os-title">
+                        <i class="fas fa-receipt" style="color:var(--primary);"></i>
+                        ملخص الطلب
+                    </div>
+
+                    <div class="os-items" id="osSummaryItems"></div>
+
+                    <div class="os-total-row">
+                        <span class="lbl">الإجمالي</span>
+                        <span class="val" id="osTotal">0 ج.م</span>
+                    </div>
+
+                    <button class="place-order-btn" id="placeOrderBtn" onclick="placeOrder()">
+                        <i class="fas fa-check-circle"></i> تأكيد الطلب
+                    </button>
+
+                    <p style="font-size:0.75rem;color:var(--text-light);text-align:center;margin-top:10px;">
+                        بالضغط على "تأكيد الطلب" توافق على
+                        <a href="#" style="color:var(--primary);">الشروط والأحكام</a>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/checkout.js"></script>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            localStorage.setItem('heiko_theme', isDark ? 'light' : 'dark');
+        }
+        (function(){
+            const saved = localStorage.getItem('heiko_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+</body>
+
+</html>

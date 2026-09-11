@@ -1,0 +1,316 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>العروض - الهيكو Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+<link rel="stylesheet" href="/css/mobile.css" />
+<script>
+/* ===== Dark/Light Mode ===== */
+function toggleTheme() {
+    var html = document.documentElement;
+    var current = html.getAttribute('data-theme') || 'light';
+    var next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('heiko_theme', next);
+}
+/* Apply saved theme immediately */
+(function() {
+    var saved = localStorage.getItem('heiko_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+</head>
+
+<body class="admin-body">
+    <div class="admin-layout">
+
+        <aside class="admin-sidebar">
+            <div class="admin-logo"><a href="index.html"><span class="admin-tag">Admin</span><img class="site-logo" src="/images/logo/heiko.png" alt="الهيكو" style="height:38px;filter:brightness(0) invert(1);" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"  /><span style="display:none;font-family:var(--font-heading);font-size:1.6rem;letter-spacing:2px;">HEIKO</span></a>
+            </div>
+            <nav class="admin-nav">
+                <div class="nav-section-label">الرئيسية</div>
+                <a href="index.html" class="admin-nav-item"><i class="fas fa-chart-pie"></i> لوحة التحكم</a>
+                <div class="nav-section-label">المتجر</div>
+                <a href="products.html" class="admin-nav-item"><i class="fas fa-spray-can"></i> المنتجات</a>
+                <a href="orders.html" class="admin-nav-item"><i class="fas fa-shopping-cart"></i> الطلبات</a>
+                <a href="offers.html" class="admin-nav-item active"><i class="fas fa-tags"></i> العروض</a>
+                <div class="nav-section-label">الإدارة</div>
+                <a href="users.html" class="admin-nav-item"><i class="fas fa-users"></i> المستخدمون</a>
+                <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> عرض
+                    المتجر</a>
+            </nav>
+            <div class="admin-user-block">
+                <div class="admin-avatar" id="adminAvatar">A</div>
+                <div>
+                    <div class="admin-user-name" id="adminName">المدير</div>
+                    <div class="admin-user-role">مدير النظام</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <div class="admin-topbar">
+                <div class="topbar-left">
+                    <span class="topbar-title">إدارة العروض</span>
+                </div>
+                <div class="topbar-right">
+                    <button class="topbar-btn" title="الإشعارات" onclick="showToast('لا توجد إشعارات جديدة','info')"><i
+                            class="fas fa-bell"></i></button>
+                    <button class="topbar-btn" title="تسجيل الخروج" onclick="adminLogout()"><i
+                            class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+
+            <div class="admin-content">
+                <div class="page-heading">
+                    <div>
+                        <h1>العروض والكوبونات</h1>
+                        <p>إدارة العروض الخاصة وأكواد الخصم</p>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="openOfferModal()">
+                        <i class="fas fa-plus"></i> إضافة عرض
+                    </button>
+                </div>
+
+                <!-- Stats -->
+                <div class="admin-stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+                    <div class="stat-card">
+                        <div class="stat-icon gold"><i class="fas fa-tags"></i></div>
+                        <div class="stat-info">
+                            <h3 id="activeOffersCount">0</h3>
+                            <p>عروض نشطة</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-ticket-alt"></i></div>
+                        <div class="stat-info">
+                            <h3 id="couponsCount">0</h3>
+                            <p>كوبونات نشطة</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-percentage"></i></div>
+                        <div class="stat-info">
+                            <h3 id="avgDiscount">0%</h3>
+                            <p>متوسط الخصم</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Offers Table -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <span class="admin-card-title">العروض الحالية</span>
+                        <div class="toolbar-search" style="max-width:260px;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="offerSearch" placeholder="بحث في العروض..."
+                                oninput="filterOffers()" />
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>اسم العرض</th>
+                                    <th>النوع</th>
+                                    <th>قيمة الخصم</th>
+                                    <th>كود الكوبون</th>
+                                    <th>تاريخ الانتهاء</th>
+                                    <th>الاستخدامات</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="offersTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="admin-card-footer">
+                        <span id="offersCount" style="font-size:0.82rem;color:var(--text-light);">0 عرض</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Offer Modal -->
+    <div class="modal-overlay" id="offerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="offerModalTitle">إضافة عرض جديد</h3>
+                <button class="modal-close" onclick="closeOfferModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="offerForm" class="admin-form">
+                    <input type="hidden" id="offerId" />
+                    <div class="form-group">
+                        <label>اسم العرض <span style="color:var(--error)">*</span></label>
+                        <input type="text" class="form-control" id="offerName" required
+                            placeholder="مثال: عطر X بخصم 20%" />
+                    </div>
+
+                    <!-- السعر الأصلي + الخصم -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>السعر الأصلي (ج.م) <span style="color:var(--error)">*</span></label>
+                            <input type="number" class="form-control" id="offerOriginalPrice" min="0"
+                                placeholder="مثال: 500" oninput="calcDiscountedPrice()" />
+                        </div>
+                        <div class="form-group">
+                            <label>السعر بعد الخصم</label>
+                            <input type="text" class="form-control" id="offerFinalPrice" readonly
+                                placeholder="يُحسب تلقائياً"
+                                style="background:#f5f5f5;color:var(--primary);font-weight:700;" />
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>نوع الخصم</label>
+                            <select class="form-control" id="offerType"
+                                onchange="toggleOfferType(); calcDiscountedPrice();">
+                                <option value="percent">نسبة مئوية (%)</option>
+                                <option value="fixed">مبلغ ثابت (ج.م)</option>
+                                <option value="buy2get1">اشتر 2 خذ 1</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="offerValueGroup">
+                            <label>قيمة الخصم <span style="color:var(--error)">*</span></label>
+                            <input type="number" class="form-control" id="offerValue" min="0" placeholder="0"
+                                oninput="calcDiscountedPrice()" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>كود الكوبون</label>
+                        <div style="display:flex;gap:8px;">
+                            <input type="text" class="form-control" id="offerCode" placeholder="مثال: SAVE20"
+                                style="text-transform:uppercase;" />
+                            <button type="button" class="btn btn-outline btn-sm" onclick="generateCode()"
+                                style="white-space:nowrap;">
+                                <i class="fas fa-random"></i> توليد
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>تاريخ البداية</label>
+                            <input type="date" class="form-control" id="offerStart" />
+                        </div>
+                        <div class="form-group">
+                            <label>تاريخ الانتهاء</label>
+                            <input type="date" class="form-control" id="offerEnd" />
+                        </div>
+                        <div class="form-group">
+                            <label>الحد الأقصى للاستخدام</label>
+                            <input type="number" class="form-control" id="offerMaxUse" min="0"
+                                placeholder="0 = غير محدود" />
+                        </div>
+                        <div class="form-group">
+                            <label>الحد الأدنى للطلب (ج.م)</label>
+                            <input type="number" class="form-control" id="offerMinOrder" min="0" value="0" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>الوصف</label>
+                        <textarea class="form-control" id="offerDesc" rows="2"
+                            placeholder="وصف العرض للعملاء..."></textarea>
+                    </div>
+
+                    <!-- صورة العرض -->
+                    <div class="form-group">
+                        <label>صورة العرض <span
+                                style="font-weight:400;color:var(--text-light);font-size:0.75rem;">(اختياري)</span></label>
+                        <div style="display:flex;gap:10px;align-items:flex-start;">
+                            <label style="flex:1;cursor:pointer;">
+                                <div style="border:2px dashed var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;color:var(--text-light);font-size:0.83rem;cursor:pointer;"
+                                    onclick="document.getElementById('offerImageFile').click()">
+                                    <i class="fas fa-image"
+                                        style="font-size:1.3rem;display:block;margin-bottom:6px;"></i>
+                                    اضغط لاختيار صورة للعرض
+                                </div>
+                                <input type="file" id="offerImageFile" accept="image/*" style="display:none;"
+                                    onchange="previewOfferImage(this)" />
+                            </label>
+                            <img id="offerImagePreview" src="" alt=""
+                                style="max-height:80px;max-width:80px;border-radius:var(--radius-sm);display:none;object-fit:cover;border:1.5px solid var(--border);" />
+                        </div>
+                        <input type="hidden" id="offerImage" />
+                    </div>
+                    <div style="display:flex;gap:12px;">
+                        <label class="checkbox-item"
+                            style="cursor:pointer;gap:8px;display:flex;align-items:center;font-size:0.85rem;">
+                            <input type="checkbox" id="offerActive" checked style="accent-color:var(--primary);" />
+                            عرض نشط
+                        </label>
+                        <label class="checkbox-item"
+                            style="cursor:pointer;gap:8px;display:flex;align-items:center;font-size:0.85rem;">
+                            <input type="checkbox" id="offerFeatured" style="accent-color:var(--primary);" />
+                            عرض مميز (يظهر في الصفحة الرئيسية)
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline btn-sm" onclick="closeOfferModal()">إلغاء</button>
+                <button class="btn btn-primary btn-sm" onclick="saveOffer()">
+                    <i class="fas fa-save"></i> حفظ العرض
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+    <script src="/js/main.js"></script>
+    <script src="/js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => { initAdminAuth(); loadOffers(); });
+
+        function toggleOfferType() {
+            const t = document.getElementById('offerType').value;
+            document.getElementById('offerValueGroup').style.display = t === 'buy2get1' ? 'none' : '';
+            calcDiscountedPrice();
+        }
+
+        function calcDiscountedPrice() {
+            const original = parseFloat(document.getElementById('offerOriginalPrice')?.value) || 0;
+            const type = document.getElementById('offerType')?.value;
+            const value = parseFloat(document.getElementById('offerValue')?.value) || 0;
+            const finalEl = document.getElementById('offerFinalPrice');
+            if (!finalEl) return;
+
+            if (!original) { finalEl.value = ''; return; }
+
+            let final = original;
+            if (type === 'percent') {
+                final = original - (original * value / 100);
+            } else if (type === 'fixed') {
+                final = original - value;
+            }
+            final = Math.max(0, final);
+            finalEl.value = `${final.toLocaleString('ar-EG')} ج.م  (وفّر ${(original - final).toLocaleString('ar-EG')} ج.م)`;
+        }
+
+        function previewOfferImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = document.getElementById('offerImagePreview');
+                if (img) { img.src = e.target.result; img.style.display = 'block'; }
+                const hidden = document.getElementById('offerImage');
+                if (hidden) hidden.value = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+
+</html>

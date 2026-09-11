@@ -1,0 +1,240 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>المستخدمون - الهيكو Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+<link rel="stylesheet" href="/css/mobile.css" />
+<script>
+/* ===== Dark/Light Mode ===== */
+function toggleTheme() {
+    var html = document.documentElement;
+    var current = html.getAttribute('data-theme') || 'light';
+    var next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('heiko_theme', next);
+}
+/* Apply saved theme immediately */
+(function() {
+    var saved = localStorage.getItem('heiko_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+</head>
+
+<body class="admin-body">
+    <div class="admin-layout">
+
+        <aside class="admin-sidebar">
+            <div class="admin-logo"><a href="index.html"><span class="admin-tag">Admin</span><img class="site-logo" src="/images/logo/heiko.png" alt="الهيكو" style="height:38px;filter:brightness(0) invert(1);" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"  /><span style="display:none;font-family:var(--font-heading);font-size:1.6rem;letter-spacing:2px;">HEIKO</span></a>
+            </div>
+            <nav class="admin-nav">
+                <div class="nav-section-label">الرئيسية</div>
+                <a href="index.html" class="admin-nav-item"><i class="fas fa-chart-pie"></i> لوحة التحكم</a>
+                <div class="nav-section-label">المتجر</div>
+                <a href="products.html" class="admin-nav-item"><i class="fas fa-spray-can"></i> المنتجات</a>
+                <a href="orders.html" class="admin-nav-item"><i class="fas fa-shopping-cart"></i> الطلبات</a>
+                <a href="offers.html" class="admin-nav-item"><i class="fas fa-tags"></i> العروض</a>
+                <div class="nav-section-label">الإدارة</div>
+                <a href="users.html" class="admin-nav-item active"><i class="fas fa-users"></i> المستخدمون</a>
+                <a href="/" class="admin-nav-item" target="_blank"><i class="fas fa-store"></i> عرض
+                    المتجر</a>
+            </nav>
+            <div class="admin-user-block">
+                <div class="admin-avatar" id="adminAvatar">A</div>
+                <div>
+                    <div class="admin-user-name" id="adminName">المدير</div>
+                    <div class="admin-user-role">مدير النظام</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <div class="admin-topbar">
+                <div class="topbar-left">
+                    <span class="topbar-title">إدارة المستخدمين</span>
+                </div>
+                <div class="topbar-right">
+                    <button class="topbar-btn" title="تصدير" onclick="exportUsers()"><i
+                            class="fas fa-download"></i></button>
+                    <button class="topbar-btn" title="الإشعارات" onclick="showToast('لا توجد إشعارات جديدة','info')"><i
+                            class="fas fa-bell"></i></button>
+                    <button class="topbar-btn" title="تسجيل الخروج" onclick="adminLogout()"><i
+                            class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+
+            <div class="admin-content">
+                <div class="page-heading">
+                    <div>
+                        <h1>المستخدمون</h1>
+                        <p>إدارة حسابات العملاء والمديرين</p>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="openUserModal()">
+                        <i class="fas fa-user-plus"></i> إضافة مستخدم
+                    </button>
+                </div>
+
+                <!-- Stats -->
+                <div class="admin-stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px;">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+                        <div class="stat-info">
+                            <h3 id="totalUsersCount">0</h3>
+                            <p>إجمالي المستخدمين</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-user-check"></i></div>
+                        <div class="stat-info">
+                            <h3 id="activeUsersCount">0</h3>
+                            <p>مستخدمون نشطون</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="fas fa-user-plus"></i></div>
+                        <div class="stat-info">
+                            <h3 id="newUsersCount">0</h3>
+                            <p>مستخدمون جدد (30 يوم)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-toolbar" style="width:100%;">
+                            <div class="toolbar-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="userSearch" placeholder="بحث بالاسم أو البريد أو الجوال..."
+                                    oninput="filterUsers()" />
+                            </div>
+                            <div class="toolbar-filters">
+                                <select class="filter-select" id="roleFilter" onchange="filterUsers()">
+                                    <option value="">كل الأدوار</option>
+                                    <option value="user">عميل</option>
+                                    <option value="admin">مدير</option>
+                                </select>
+                                <select class="filter-select" id="userStatusFilter" onchange="filterUsers()">
+                                    <option value="">كل الحالات</option>
+                                    <option value="active">نشط</option>
+                                    <option value="inactive">موقوف</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>المستخدم</th>
+                                    <th>البريد الإلكتروني</th>
+                                    <th>الجوال</th>
+                                    <th>الدور</th>
+                                    <th>الطلبات</th>
+                                    <th>تاريخ التسجيل</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="admin-card-footer">
+                        <span id="usersCount" style="font-size:0.82rem;color:var(--text-light);">0 مستخدم</span>
+                        <div class="pagination" id="usersPagination"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="userModalTitle">إضافة مستخدم</h3>
+                <button class="modal-close" onclick="closeUserModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm" class="admin-form">
+                    <input type="hidden" id="userId" />
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>الاسم الأول <span style="color:var(--error)">*</span></label>
+                            <input type="text" class="form-control" id="uFirstName" required />
+                        </div>
+                        <div class="form-group">
+                            <label>اسم العائلة</label>
+                            <input type="text" class="form-control" id="uLastName" />
+                        </div>
+                        <div class="form-group">
+                            <label>البريد الإلكتروني <span style="color:var(--error)">*</span></label>
+                            <input type="email" class="form-control" id="uEmail" required />
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الجوال</label>
+                            <input type="tel" class="form-control" id="uPhone" placeholder="05XXXXXXXX" />
+                        </div>
+                        <div class="form-group">
+                            <label>الدور</label>
+                            <select class="form-control" id="uRole">
+                                <option value="user">عميل</option>
+                                <option value="admin">مدير</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>الحالة</label>
+                            <select class="form-control" id="uStatus">
+                                <option value="active">نشط</option>
+                                <option value="inactive">موقوف</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="passwordGroup">
+                        <label>كلمة المرور</label>
+                        <input type="password" class="form-control" id="uPassword"
+                            placeholder="اتركه فارغاً للإبقاء على الحالي" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline btn-sm" onclick="closeUserModal()">إلغاء</button>
+                <button class="btn btn-primary btn-sm" onclick="saveUser()">
+                    <i class="fas fa-save"></i> حفظ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Orders Modal -->
+    <div class="modal-overlay" id="userOrdersModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3 class="modal-title" id="userOrdersTitle">طلبات العميل</h3>
+                <button class="modal-close" onclick="closeUserOrdersModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="userOrdersBody"></div>
+            <div class="modal-footer">
+                <button class="btn btn-outline btn-sm" onclick="closeUserOrdersModal()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+    <script src="/js/main.js"></script>
+    <script src="/js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => { initAdminAuth(); loadUsers(); });
+        function exportUsers() { showToast('جاري تصدير بيانات المستخدمين...', 'info'); }
+    </script>
+</body>
+
+</html>

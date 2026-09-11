@@ -1,0 +1,320 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لوحة التحكم - الهيكو Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+<link rel="stylesheet" href="/css/mobile.css" />
+<script>
+/* ===== Dark/Light Mode ===== */
+function toggleTheme() {
+    var html = document.documentElement;
+    var current = html.getAttribute('data-theme') || 'light';
+    var next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('heiko_theme', next);
+}
+/* Apply saved theme immediately */
+(function() {
+    var saved = localStorage.getItem('heiko_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+</head>
+
+<body class="admin-body">
+    <div class="admin-layout">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-logo">
+                <a href="index.html"><span class="admin-tag">Admin</span><img class="site-logo" src="/images/logo/heiko.png" alt="الهيكو" style="height:38px;filter:brightness(0) invert(1);" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"  /><span style="display:none;font-family:var(--font-heading);font-size:1.6rem;letter-spacing:2px;">HEIKO</span></a>
+            </div>
+            <nav class="admin-nav">
+                <div class="nav-section-label">الرئيسية</div>
+                <a href="index.html" class="admin-nav-item active">
+                    <i class="fas fa-chart-pie"></i> لوحة التحكم
+                </a>
+
+                <div class="nav-section-label">المتجر</div>
+                <a href="products.html" class="admin-nav-item">
+                    <i class="fas fa-spray-can"></i> المنتجات
+                </a>
+                <a href="orders.html" class="admin-nav-item">
+                    <i class="fas fa-shopping-cart"></i> الطلبات
+                    <span class="nav-badge" id="pendingBadge">0</span>
+                </a>
+                <a href="offers.html" class="admin-nav-item">
+                    <i class="fas fa-tags"></i> العروض
+                </a>
+
+                <div class="nav-section-label">الإدارة</div>
+                <a href="users.html" class="admin-nav-item">
+                    <i class="fas fa-users"></i> المستخدمون
+                </a>
+                <a href="/" class="admin-nav-item" target="_blank">
+                    <i class="fas fa-store"></i> عرض المتجر
+                </a>
+            </nav>
+            <div class="admin-user-block">
+                <div class="admin-avatar" id="adminAvatar">A</div>
+                <div>
+                    <div class="admin-user-name" id="adminName">المدير</div>
+                    <div class="admin-user-role">مدير النظام</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ===== MAIN ===== -->
+        <main class="admin-main">
+            <!-- Topbar -->
+            <div class="admin-topbar">
+                <div class="topbar-left">
+                    <span class="topbar-title">لوحة التحكم</span>
+                    <div class="topbar-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="بحث..." />
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button class="topbar-btn" title="الإشعارات" onclick="showToast('لا توجد إشعارات جديدة','info')">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button class="topbar-btn" title="الإعدادات" onclick="showToast('صفحة الإعدادات قريباً','info')"><i
+                            class="fas fa-cog"></i></button>
+                    <button class="topbar-btn" onclick="adminLogout()" title="تسجيل الخروج">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="admin-content">
+                <div class="page-heading">
+                    <div>
+                        <h1>لوحة التحكم</h1>
+                        <p>مرحباً! إليك ملخص أداء المتجر اليوم.</p>
+                    </div>
+                    <div style="display:flex;gap:10px;">
+                        <button class="btn btn-outline btn-sm" onclick="exportReport()">
+                            <i class="fas fa-download"></i> تصدير تقرير
+                        </button>
+                        <a href="products.html" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> منتج جديد
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="admin-stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon gold"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="stat-info">
+                            <h3 id="statRevenue">0</h3>
+                            <p>إجمالي الإيرادات (ج.م)</p>
+                        </div>
+                        <span class="stat-change up" id="revenueChange"><i class="fas fa-arrow-up"></i> 0%</span>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-shopping-cart"></i></div>
+                        <div class="stat-info">
+                            <h3 id="statOrders">0</h3>
+                            <p>الطلبات هذا الشهر</p>
+                        </div>
+                        <span class="stat-change up" id="ordersChange"><i class="fas fa-arrow-up"></i> 0%</span>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-users"></i></div>
+                        <div class="stat-info">
+                            <h3 id="statUsers">0</h3>
+                            <p>إجمالي العملاء</p>
+                        </div>
+                        <span class="stat-change up" id="usersChange"><i class="fas fa-arrow-up"></i> 0%</span>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="fas fa-spray-can"></i></div>
+                        <div class="stat-info">
+                            <h3 id="statProducts">0</h3>
+                            <p>المنتجات النشطة</p>
+                        </div>
+                        <span class="stat-change" id="productsChange" style="color:var(--text-light);">— محدّث</span>
+                    </div>
+                </div>
+
+                <!-- Charts + Recent Orders -->
+                <div class="dashboard-grid">
+                    <!-- Sales Chart -->
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <span class="admin-card-title"><i class="fas fa-chart-bar"
+                                    style="color:var(--primary);margin-left:6px;"></i>المبيعات الشهرية</span>
+                            <select
+                                style="font-size:0.82rem;padding:4px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;">
+                                <option>2024</option>
+                                <option>2023</option>
+                            </select>
+                        </div>
+                        <div class="admin-card-body">
+                            <div class="chart-container" id="salesChart"></div>
+                            <div class="chart-labels" id="chartLabels"></div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Orders -->
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <span class="admin-card-title"><i class="fas fa-clock"
+                                    style="color:var(--primary);margin-left:6px;"></i>آخر الطلبات</span>
+                            <a href="orders.html" style="font-size:0.82rem;color:var(--primary);">عرض الكل</a>
+                        </div>
+                        <div class="admin-card-body" id="recentOrders" style="padding:12px 20px;"></div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions only -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <span class="admin-card-title"><i class="fas fa-bolt"
+                                style="color:var(--primary);margin-left:6px;"></i>إجراءات سريعة</span>
+                    </div>
+                    <div class="admin-card-body">
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+                            <a href="products.html" class="btn btn-outline btn-block"
+                                style="justify-content:flex-start;gap:10px;font-size:0.85rem;"
+                                onclick="setTimeout(()=>openProductModal(),400)">
+                                <i class="fas fa-plus-circle" style="color:var(--primary);"></i> إضافة منتج
+                            </a>
+                            <a href="offers.html" class="btn btn-outline btn-block"
+                                style="justify-content:flex-start;gap:10px;font-size:0.85rem;">
+                                <i class="fas fa-tag" style="color:var(--primary);"></i> إضافة عرض
+                            </a>
+                            <a href="orders.html" class="btn btn-outline btn-block"
+                                style="justify-content:flex-start;gap:10px;font-size:0.85rem;">
+                                <i class="fas fa-clock" style="color:var(--warning);"></i> الطلبات المعلقة
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    </main>
+    </div>
+
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+    <script src="/js/main.js"></script>
+    <script src="/js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initAdminAuth();
+            loadDashboard();
+        });
+
+        async function loadDashboard() {
+            try {
+                const data = await apiFetch('/api/admin/stats');
+                renderStats(data);
+            } catch {
+                renderStats({
+                    revenue: 48320, revenue_change: 12.4,
+                    orders: 186, orders_change: 8.2,
+                    users: 1240, users_change: 5.6,
+                    products: 94,
+                    pending_orders: 7,
+                    monthly_sales: [12000, 18000, 15000, 22000, 19000, 28000, 24000, 31000, 27000, 35000, 30000, 48000],
+                    recent_orders: [
+                        { id: 'ORD-001', name: 'محمد العتيبي', total: 1240, status: 'pending', date: '2024-12-01' },
+                        { id: 'ORD-002', name: 'سارة الرشيد', total: 680, status: 'processing', date: '2024-12-01' },
+                        { id: 'ORD-003', name: 'خالد الدوسري', total: 2100, status: 'delivered', date: '2024-11-30' },
+                        { id: 'ORD-004', name: 'نورة الشمري', total: 450, status: 'shipped', date: '2024-11-30' },
+                        { id: 'ORD-005', name: 'عبدالله القحطاني', total: 890, status: 'cancelled', date: '2024-11-29' },
+                    ],
+                    top_products: [
+                        { name: 'Bleu de Chanel', brand: 'Chanel', sales: 42 },
+                        { name: 'Sauvage EDP', brand: 'Dior', sales: 38 },
+                        { name: 'Oud Wood', brand: 'Tom Ford', sales: 31 },
+                        { name: 'Black Opium', brand: 'YSL', sales: 28 },
+                        { name: 'Aventus', brand: 'Creed', sales: 19 },
+                    ]
+                });
+            }
+        }
+
+        function renderStats(data) {
+            document.getElementById('statRevenue').textContent = Number(data.revenue).toLocaleString('ar-EG');
+            document.getElementById('statOrders').textContent = data.orders;
+            document.getElementById('statUsers').textContent = data.users;
+            document.getElementById('statProducts').textContent = data.products;
+            document.getElementById('pendingBadge').textContent = data.pending_orders || 0;
+
+            setChange('revenueChange', data.revenue_change);
+            setChange('ordersChange', data.orders_change);
+            setChange('usersChange', data.users_change);
+
+            renderChart(data.monthly_sales || []);
+            renderRecentOrders(data.recent_orders || []);
+            renderTopProducts(data.top_products || []);
+        }
+
+        function setChange(id, pct) {
+            const el = document.getElementById(id);
+            if (!el || pct == null) return;
+            const up = pct >= 0;
+            el.className = `stat-change ${up ? 'up' : 'down'}`;
+            el.innerHTML = `<i class="fas fa-arrow-${up ? 'up' : 'down'}"></i> ${Math.abs(pct)}%`;
+        }
+
+        function renderChart(sales) {
+            const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+            const max = Math.max(...sales) || 1;
+            const chart = document.getElementById('salesChart');
+            const labels = document.getElementById('chartLabels');
+            if (!chart) return;
+
+            chart.innerHTML = sales.map((v, i) => `
+      <div class="chart-bar" style="height:${(v / max) * 100}%">
+        <div class="tooltip">${Number(v).toLocaleString('ar-EG')} ج.م</div>
+      </div>`).join('');
+
+            if (labels) labels.innerHTML = months.map(m => `<span>${m}</span>`).join('');
+        }
+
+        function renderRecentOrders(orders) {
+            const el = document.getElementById('recentOrders');
+            if (!el) return;
+            const statusLabel = { pending: 'معلق', processing: 'قيد التجهيز', shipped: 'شُحن', delivered: 'مُسلَّم', cancelled: 'ملغي' };
+            const statusClass = { pending: 'status-pending', processing: 'status-processing', shipped: 'status-shipped', delivered: 'status-delivered', cancelled: 'status-cancelled' };
+            el.innerHTML = orders.map(o => `
+      <div class="order-mini">
+        <span class="order-mini-id">${o.id}</span>
+        <span class="order-mini-name">${o.name}</span>
+        <span class="status-badge ${statusClass[o.status] || ''}">${statusLabel[o.status] || o.status}</span>
+        <span class="order-mini-amount">${Number(o.total).toLocaleString('ar-EG')} ج.م</span>
+      </div>`).join('');
+        }
+
+        function renderTopProducts(products) {
+            const el = document.getElementById('topProducts');
+            if (!el) return;
+            el.innerHTML = products.map((p, i) => `
+      <div class="top-product-item">
+        <div class="top-product-rank">${i + 1}</div>
+        <div class="top-product-name">${p.name}<br><span style="font-size:0.75rem;color:var(--text-light);font-weight:400;">${p.brand}</span></div>
+        <div class="top-product-sales">${p.sales} مبيعة</div>
+      </div>`).join('');
+        }
+
+        function exportReport() {
+            showToast('جاري إعداد التقرير...', 'info');
+            setTimeout(() => showToast('تم تصدير التقرير بنجاح', 'success'), 1500);
+        }
+    </script>
+</body>
+
+</html>

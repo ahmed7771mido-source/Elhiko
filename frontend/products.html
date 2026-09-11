@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>المنتجات - الهيكو</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/products.css" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+    <style>
+        .navbar-brand { text-decoration: none; display: inline-block; }
+        .heiko-logo-wrap { position:relative; width:60px; height:60px; display:flex; align-items:center; justify-content:center; }
+        .heiko-ring { position:absolute; inset:0; width:100%; height:100%; animation:heiko-spin 16s linear infinite; }
+        @keyframes heiko-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        .heiko-inner-logo { width:36px; height:36px; object-fit:contain; position:relative; z-index:1; border-radius:50%; }
+        .heiko-inner-text { width:36px; height:36px; background:var(--primary); border-radius:50%; display:none; align-items:center; justify-content:center; font-family:Georgia,serif; font-size:1.3rem; color:#fff; font-weight:700; position:relative; z-index:1; }
+    </style><link rel="stylesheet" href="/css/mobile.css" />
+<script>
+/* ===== Dark/Light Mode ===== */
+function toggleTheme() {
+    var html = document.documentElement;
+    var current = html.getAttribute('data-theme') || 'light';
+    var next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('heiko_theme', next);
+}
+/* Apply saved theme immediately */
+(function() {
+    var saved = localStorage.getItem('heiko_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">
+  <div class="heiko-logo-wrap">
+    <svg class="heiko-ring" viewBox="0 0 100 100">
+      <defs>
+        <path id="circle-path" d="M 50,50 m -32,0 a 32,32 0 1,1 64,0 a 32,32 0 1,1 -64,0"/>
+      </defs>
+      <text font-size="11.5" fill="var(--primary)" font-family="Georgia,serif" letter-spacing="3.5">
+        <textPath href="#circle-path">HEIKO ✦ PERFUMES ✦ ORIGINAL ✦ </textPath>
+      </text>
+    </svg>
+    <img src="/images/logo/heiko.png" alt="الهيكو" class="heiko-inner-logo"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+    <div class="heiko-inner-text" style="display:none;">H</div>
+  </div>
+</a>
+            <div class="nav-overlay" id="navOverlay"></div>
+                                                <ul class="navbar-nav" id="navbarNav">
+                <li><a href="/">الرئيسية</a></li>
+                <li><a href="/products.html">المنتجات</a></li>
+                <li><a href="/#offers-section">العروض</a></li>
+                <li><a href="#contact">تواصل معنا</a></li>
+            </ul>
+            <div class="navbar-actions">
+                <button class="nav-icon-btn" aria-label="بحث"
+                    onclick="document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('open'); document.getElementById('searchInput')?.focus();">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="nav-icon-btn" onclick="window.location.href='cart.html'" aria-label="سلة">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+                <button class="nav-icon-btn" id="userBtn" aria-label="حساب"><i class="fas fa-user"></i></button>
+                <button class="theme-toggle" id="themeToggle" title="تبديل الوضع" onclick="toggleTheme()">
+                    <i class="fas fa-moon icon-moon"></i>
+                    <i class="fas fa-sun icon-sun"></i>
+                </button>
+                <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="page-header">
+        <h1>متجر العطور</h1>
+        <div class="breadcrumb">
+            <a href="/">الرئيسية</a>
+            <span class="sep">/</span>
+            <span>المنتجات</span>
+        </div>
+    </div>
+
+    <!-- ===== PRODUCTS PAGE ===== -->
+    <div class="products-page">
+        <div class="container">
+
+            <!-- Mobile filter toggle -->
+            <button class="filter-toggle-btn" id="filterToggle">
+                <i class="fas fa-sliders-h"></i> الفلاتر
+            </button>
+
+            <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+            <div class="products-layout">
+
+                <!-- ===== SIDEBAR ===== -->
+                <aside class="sidebar" id="sidebar">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                        <h3 style="font-family:var(--font-heading);color:var(--secondary);">الفلاتر</h3>
+                        <button onclick="clearAllFilters()"
+                            style="font-size:0.8rem;color:var(--primary);background:none;border:none;cursor:pointer;">مسح
+                            الكل</button>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="sidebar-card">
+                        <div class="filter-search">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="ابحث عن عطر..." />
+                        </div>
+                    </div>
+
+                    <!-- Category Accordion -->
+                    <div class="sidebar-card acc-card">
+                        <div class="sidebar-heading acc-toggle" onclick="toggleAcc(this)">
+                            الفئة <i class="fas fa-chevron-down acc-icon"></i>
+                        </div>
+                        <div class="acc-body">
+                            <ul class="category-list">
+                                <li class="category-item active" data-cat="all" onclick="filterByCategory(this)">الكل
+                                    <span class="category-count" id="count-all">0</span>
+                                </li>
+                                <li class="category-item" data-cat="men" onclick="filterByCategory(this)">رجالي <span
+                                        class="category-count" id="count-men">0</span></li>
+                                <li class="category-item" data-cat="women" onclick="filterByCategory(this)">نسائي <span
+                                        class="category-count" id="count-women">0</span></li>
+                                <li class="category-item" data-cat="unisex" onclick="filterByCategory(this)">مشترك <span
+                                        class="category-count" id="count-unisex">0</span></li>
+                                <li class="category-item" data-cat="oud" onclick="filterByCategory(this)">عود <span
+                                        class="category-count" id="count-oud">0</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Price Range Accordion -->
+                    <div class="sidebar-card acc-card">
+                        <div class="sidebar-heading acc-toggle" onclick="toggleAcc(this)">
+                            نطاق السعر <i class="fas fa-chevron-down acc-icon"></i>
+                        </div>
+                        <div class="acc-body" style="display:none;">
+                            <div class="price-range-wrapper">
+                                <input type="range" class="price-slider" id="priceSlider" min="0" max="3000"
+                                    value="3000" step="50" />
+                                <div class="price-range-labels">
+                                    <span>0 ج.م</span>
+                                    <span id="priceMax">3000 ج.م</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Brands Accordion -->
+                    <div class="sidebar-card acc-card">
+                        <div class="sidebar-heading acc-toggle" onclick="toggleAcc(this)">
+                            الدار / الماركة <i class="fas fa-chevron-down acc-icon"></i>
+                        </div>
+                        <div class="acc-body" style="display:none;">
+                            <div class="brand-list" id="brandList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Size Accordion -->
+                    <div class="sidebar-card acc-card">
+                        <div class="sidebar-heading acc-toggle" onclick="toggleAcc(this)">
+                            الحجم <i class="fas fa-chevron-down acc-icon"></i>
+                        </div>
+                        <div class="acc-body" style="display:none;">
+                            <div class="size-options">
+                                <button class="size-btn" data-size="30">30ml</button>
+                                <button class="size-btn" data-size="50">50ml</button>
+                                <button class="size-btn" data-size="75">75ml</button>
+                                <button class="size-btn" data-size="100">100ml</button>
+                                <button class="size-btn" data-size="150">150ml</button>
+                                <button class="size-btn" data-size="200">200ml</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rating Accordion -->
+                    <div class="sidebar-card acc-card">
+                        <div class="sidebar-heading acc-toggle" onclick="toggleAcc(this)">
+                            التقييم <i class="fas fa-chevron-down acc-icon"></i>
+                        </div>
+                        <div class="acc-body" style="display:none;">
+                            <div class="rating-filters">
+                                <label class="rating-filter-item"><input type="radio" name="rating" value="0" checked />
+                                    الكل</label>
+                                <label class="rating-filter-item"><input type="radio" name="rating" value="4" /><span
+                                        class="rating-stars">★★★★☆</span> 4+ نجوم</label>
+                                <label class="rating-filter-item">
+                                    <input type="radio" name="rating" value="3" />
+                                    <span class="rating-stars">★★★☆☆</span> 3+ نجوم
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Availability Accordion -->
+                    <div class="sidebar-card acc-card">
+                        <div class="sidebar-heading acc-toggle" onclick="toggleAcc(this)">
+                            التوفر <i class="fas fa-chevron-down acc-icon"></i>
+                        </div>
+                        <div class="acc-body" style="display:none;">
+                            <div class="checkbox-list">
+                                <label class="checkbox-item"><input type="checkbox" id="inStock" /> متوفر فقط</label>
+                                <label class="checkbox-item"><input type="checkbox" id="onSale" /> عروض فقط</label>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- ===== MAIN AREA ===== -->
+                <div class="products-main">
+
+                    <!-- Toolbar -->
+                    <div class="products-toolbar">
+                        <div class="toolbar-left">
+                            <span class="results-count">عرض <span id="resultsShown">0</span> من <span
+                                    id="resultsTotal">0</span> منتج</span>
+                            <div class="active-filters" id="activeFilters"></div>
+                        </div>
+                        <div class="toolbar-right">
+                            <select class="sort-select" id="sortSelect">
+                                <option value="default">الترتيب الافتراضي</option>
+                                <option value="price-asc">السعر: من الأقل</option>
+                                <option value="price-desc">السعر: من الأعلى</option>
+                                <option value="rating">الأعلى تقييماً</option>
+                                <option value="newest">الأحدث</option>
+                                <option value="name-asc">الاسم: أ-ي</option>
+                            </select>
+                            <div class="view-toggle">
+                                <button class="view-btn active" id="gridViewBtn" title="شبكة"><i
+                                        class="fas fa-th"></i></button>
+                                <button class="view-btn" id="listViewBtn" title="قائمة"><i
+                                        class="fas fa-list"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Products Container -->
+                    <div id="products-container">
+                        <div class="products-grid" id="productsGrid">
+                            <div class="loading-spinner" style="grid-column:1/-1;">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/products.js"></script>
+    <script>
+        /* Accordion toggle */
+        function toggleAcc(header) {
+            const body = header.nextElementSibling;
+            const icon = header.querySelector('.acc-icon');
+            const isOpen = body.style.display !== 'none';
+            body.style.display = isOpen ? 'none' : 'block';
+            if (icon) icon.style.transform = isOpen ? '' : 'rotate(180deg)';
+        }
+    </script>
+    <style>
+        .acc-toggle {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .acc-icon {
+            transition: transform 0.25s ease;
+            font-size: 0.75rem;
+        }
+
+        .acc-body {
+            padding-top: 10px;
+        }
+    </style>
+</body>
+
+</html>
