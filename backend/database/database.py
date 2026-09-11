@@ -11,17 +11,21 @@ import secrets
 # ── Paths ──────────────────────────────────────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# On Vercel, filesystem is read-only except /tmp
-if os.environ.get('VERCEL'):
-    DB_PATH = '/tmp/heiko.db'
-else:
-    DB_PATH = os.path.join(BASE_DIR, 'backend', 'heiko.db')
+def _get_db_path() -> str:
+    """Get DB path at runtime — works locally and on Vercel."""
+    if os.environ.get('VERCEL'):
+        return '/tmp/heiko.db'
+    # Always store next to this file's parent (backend/)
+    here = os.path.dirname(os.path.abspath(__file__))          # database/
+    backend = os.path.dirname(here)                             # backend/
+    path = os.path.join(backend, 'heiko.db')
+    return path
 
 
-# ── Connection helper ───────────────────────────────────────────────────────────
 def get_connection() -> sqlite3.Connection:
     """Return a SQLite connection with row factory."""
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False, timeout=30)
+    db_path = _get_db_path()
+    conn = sqlite3.connect(db_path, check_same_thread=False, timeout=30)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=DELETE")
     conn.execute("PRAGMA foreign_keys=ON")
@@ -231,7 +235,7 @@ def init_db() -> None:
         conn.executescript(SCHEMA)
         conn.executescript(INDEXES)
         seed_database(conn)
-        print(f"[DB] Database ready at: {DB_PATH}")
+        print(f"[DB] Database ready at: {_get_db_path()}")
     finally:
         conn.close()
 
