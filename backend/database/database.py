@@ -9,8 +9,13 @@ import hashlib
 import secrets
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DB_PATH  = os.path.join(BASE_DIR, 'perfuim.db')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# On Vercel, filesystem is read-only except /tmp
+if os.environ.get('VERCEL'):
+    DB_PATH = '/tmp/heiko.db'
+else:
+    DB_PATH = os.path.join(BASE_DIR, 'backend', 'heiko.db')
 
 
 # ── Connection helper ───────────────────────────────────────────────────────────
