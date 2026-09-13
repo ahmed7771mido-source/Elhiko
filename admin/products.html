@@ -12,30 +12,35 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/admin.css" />
-<link rel="stylesheet" href="/css/mobile.css" />
-<script>
-/* ===== Dark/Light Mode ===== */
-function toggleTheme() {
-    var html = document.documentElement;
-    var current = html.getAttribute('data-theme') || 'light';
-    var next = current === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', next);
-    localStorage.setItem('heiko_theme', next);
-}
-/* Apply saved theme immediately */
-(function() {
-    var saved = localStorage.getItem('heiko_theme') || 'light';
-    document.documentElement.setAttribute('data-theme', saved);
-})();
-</script>
+    <link rel="stylesheet" href="/css/mobile.css" />
+    <script>
+        /* ===== Dark/Light Mode ===== */
+        function toggleTheme() {
+            var html = document.documentElement;
+            var current = html.getAttribute('data-theme') || 'light';
+            var next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('heiko_theme', next);
+        }
+        /* Apply saved theme immediately */
+        (function () {
+            var saved = localStorage.getItem('heiko_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+<link rel="stylesheet" href="/css/admin-mobile.css" />
 </head>
 
 <body class="admin-body">
     <div class="admin-layout">
+<div class="sidebar-mobile-overlay" id="sidebarOverlay" onclick="closeAdminSidebar()"></div>
 
         <!-- SIDEBAR -->
         <aside class="admin-sidebar">
-            <div class="admin-logo"><a href="index.html"><span class="admin-tag">Admin</span><img class="site-logo" src="/images/logo/heiko.png" alt="الهيكو" style="height:38px;filter:brightness(0) invert(1);" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"  /><span style="display:none;font-family:var(--font-heading);font-size:1.6rem;letter-spacing:2px;">HEIKO</span></a>
+            <div class="admin-logo"><a href="index.html"><span class="admin-tag">Admin</span><img class="site-logo"
+                        src="/images/logo/heiko.png" alt="الهيكو" style="height:38px;filter:brightness(0) invert(1);"
+                        onerror="this.style.display='none';this.nextElementSibling.style.display='inline'" /><span
+                        style="display:none;font-family:var(--font-heading);font-size:1.6rem;letter-spacing:2px;">HEIKO</span></a>
             </div>
             <nav class="admin-nav">
                 <div class="nav-section-label">الرئيسية</div>
@@ -60,7 +65,8 @@ function toggleTheme() {
 
         <main class="admin-main">
             <div class="admin-topbar">
-                <div class="topbar-left"><span class="topbar-title">إدارة المنتجات</span></div>
+                <div class="topbar-left">
+                    <button class="admin-menu-toggle" id="adminMenuToggle" onclick="toggleAdminSidebar()" aria-label="القائمة"><i class="fas fa-bars"></i></button><span class="topbar-title">إدارة المنتجات</span></div>
                 <div class="topbar-right">
                     <button class="topbar-btn" title="الإشعارات" onclick="showToast('لا توجد إشعارات جديدة','info')"><i
                             class="fas fa-bell"></i></button>
@@ -290,18 +296,44 @@ function toggleTheme() {
             document.getElementById('pImagesFiles').click();
         });
 
-        // Preview صورة واحدة وتحويلها لـ Base64
-        function previewFile(input, previewId, b64Id) {
+        // Preview صورة واحدة + رفعها للـ API مباشرة
+        async function previewFile(input, previewId, b64Id) {
             const file = input.files[0];
             if (!file) return;
+
+            // Preview محلي
             const reader = new FileReader();
             reader.onload = e => {
                 const img = document.getElementById(previewId);
                 if (img) { img.src = e.target.result; img.style.display = 'block'; }
-                const b64 = document.getElementById(b64Id);
-                if (b64) b64.value = e.target.result;
             };
             reader.readAsDataURL(file);
+
+            // Upload للـ Supabase عبر الـ API
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+                const res = await fetch('/api/products/upload-image', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                    body: formData,
+                });
+                const data = await res.json();
+                if (data.success && data.url) {
+                    const b64 = document.getElementById(b64Id);
+                    if (b64) b64.value = data.url;
+                    showToast('تم رفع الصورة ✓', 'success');
+                }
+            } catch {
+                showToast('فشل رفع الصورة، سيتم الحفظ محلياً', 'info');
+                // Fallback: keep base64
+                const reader2 = new FileReader();
+                reader2.onload = e => {
+                    const b64 = document.getElementById(b64Id);
+                    if (b64) b64.value = e.target.result;
+                };
+                reader2.readAsDataURL(file);
+            }
         }
 
         // Drag & drop صورة واحدة

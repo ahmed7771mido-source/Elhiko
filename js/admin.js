@@ -173,7 +173,6 @@ function saveProduct(e) {
     e?.preventDefault();
     const id = document.getElementById('productId').value;
     const product = {
-        id: id ? +id : Date.now(),
         name: getValue('pName'),
         brand: getValue('pBrand'),
         price: +getValue('pPrice'),
@@ -187,32 +186,56 @@ function saveProduct(e) {
         image: document.getElementById('pImageB64')?.value || getValue('pImage') || '',
         images: (() => {
             try { const v = getValue('pImages'); return v ? JSON.parse(v) : []; }
-            catch { return getValue('pImages').split('\n').map(s => s.trim()).filter(Boolean); }
+            catch { return []; }
         })(),
         is_new: getCheck('pIsNew'),
         featured: getCheck('pFeatured'),
-        rating: 4.5,
     };
 
     if (!product.name || !product.brand || !product.price || !product.category) {
         showToast('يرجى ملء جميع الحقول الإلزامية', 'error'); return;
     }
 
-    if (id) {
-        const idx = _products.findIndex(p => p.id === +id);
-        if (idx > -1) _products[idx] = product;
-    } else {
-        _products.unshift(product);
-    }
-
-    // API call (fire-and-forget)
     const method = id ? 'PUT' : 'POST';
     const url = id ? `/api/products/${id}` : '/api/products';
-    apiFetch(url, { method, body: JSON.stringify(product) }).catch(() => { });
 
-    closeProductModal();
-    filterProducts();
-    showToast(id ? 'تم تحديث المنتج بنجاح' : 'تمت إضافة المنتج بنجاح', 'success');
+    // Show loading
+    const saveBtn = document.querySelector('#productModal .btn-primary');
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; }
+
+    // Use FormData so the server can receive the image file directly
+    const formData = new FormData();
+    Object.entries(product).forEach(([k, v]) => {
+        if (v === null || v === undefined) return;
+        if (Array.isArray(v)) {
+            formData.append(k, JSON.stringify(v));
+        } else {
+            formData.append(k, String(v));
+        }
+    });
+
+    // Attach image file if a new one was selected
+    const imgFile = document.getElementById('pImageFile')?.files?.[0];
+    if (imgFile) formData.set('image', imgFile);
+
+    fetch(url, {
+        method,
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        body: formData,
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) throw new Error(data.message || 'فشل');
+            closeProductModal();
+            showToast(id ? 'تم تحديث المنتج بنجاح' : 'تمت إضافة المنتج بنجاح ✓', 'success');
+            loadProducts();
+        })
+        .catch(err => {
+            showToast('فشل حفظ المنتج: ' + (err.message || 'تأكد من الاتصال'), 'error');
+        })
+        .finally(() => {
+            if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> حفظ المنتج'; }
+        });
 }
 
 function editProduct(id) { openProductModal(id); }
@@ -224,11 +247,17 @@ function deleteProduct(id) {
     document.getElementById('confirmDeleteBtn').onclick = confirmDeleteProduct;
 }
 function confirmDeleteProduct() {
-    _products = _products.filter(p => p.id !== _deleteProductId);
-    apiFetch(`/api/products/${_deleteProductId}`, { method: 'DELETE' }).catch(() => { });
-    closeConfirm();
-    filterProducts();
-    showToast('تم حذف المنتج', 'info');
+    apiFetch(`/api/products/${_deleteProductId}`, { method: 'DELETE' })
+        .then(() => {
+            _products = _products.filter(p => p.id !== _deleteProductId);
+            closeConfirm();
+            filterProducts();
+            showToast('تم حذف المنتج', 'info');
+        })
+        .catch(() => {
+            closeConfirm();
+            showToast('فشل الحذف، حاول مرة أخرى', 'error');
+        });
 }
 function closeConfirm() {
     document.getElementById('confirmModal')?.classList.remove('open');

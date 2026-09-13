@@ -1,0 +1,165 @@
+/* ============================================
+   ELHIKO Admin - Mobile Responsive
+   ============================================ */
+
+/* ── Admin layout: sidebar hidden on mobile ── */
+@media (max-width: 768px) {
+
+  /* Layout */
+  .admin-layout {
+    grid-template-columns: 1fr !important;
+    position: relative;
+  }
+
+  /* Sidebar hidden by default */
+  .admin-sidebar {
+    position: fixed !important;
+    top: 0;
+    right: -280px;
+    width: 260px !important;
+    height: 100vh;
+    z-index: 1100;
+    transition: right 0.3s ease;
+    box-shadow: none;
+    overflow-y: auto;
+  }
+
+  .admin-sidebar.mobile-open {
+    right: 0;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.3);
+  }
+
+  /* Sidebar overlay */
+  .sidebar-mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1050;
+  }
+  .sidebar-mobile-overlay.open { display: block; }
+
+  /* Topbar */
+  .admin-topbar {
+    padding: 12px 16px !important;
+    gap: 10px;
+  }
+
+  .topbar-left { gap: 10px; }
+  .topbar-title { font-size: 0.9rem; }
+
+  .topbar-search { display: none; }
+
+  /* Menu toggle button */
+  .admin-menu-toggle {
+    display: flex !important;
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  /* Content padding */
+  .admin-content { padding: 16px !important; }
+
+  /* Stats grid */
+  .admin-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+
+  .stat-card { padding: 16px !important; }
+  .stat-icon { width: 40px; height: 40px; font-size: 1rem; }
+  .stat-info h3 { font-size: 1.3rem; }
+
+  /* Page heading */
+  .page-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .page-heading h1 { font-size: 1.3rem; }
+
+  /* Dashboard grid */
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Cards */
+  .admin-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+  }
+
+  /* Table wrapper */
+  .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .admin-table { min-width: 600px; font-size: 0.8rem; }
+  .admin-table thead th { padding: 10px 12px; font-size: 0.72rem; }
+  .admin-table tbody td { padding: 10px 12px; }
+
+  /* Toolbar */
+  .admin-toolbar { flex-direction: column; gap: 10px; }
+  .toolbar-search { max-width: 100% !important; }
+  .toolbar-filters { flex-wrap: wrap; gap: 8px; }
+  .filter-select { font-size: 0.8rem; padding: 7px 10px; }
+
+  /* Forms grid */
+  .form-grid, .admin-form .form-grid { grid-template-columns: 1fr !important; }
+
+  /* Modal */
+  .modal, .modal-lg {
+    max-width: 95vw !important;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 5vh auto;
+  }
+  .modal-body { padding: 16px !important; }
+  .modal-header { padding: 14px 16px; }
+  .modal-footer { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
+
+  /* Status tabs */
+  #statusTabs, .status-tab-wrap {
+    gap: 6px !important;
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    padding-bottom: 4px;
+  }
+  .status-tab { white-space: nowrap; font-size: 0.78rem; padding: 6px 10px; }
+
+  /* Orders table adjustments */
+  .status-select { font-size: 0.72rem; padding: 4px 8px; }
+  .qa-btn { width: 28px; height: 28px; font-size: 0.8rem; }
+
+  /* Quick actions grid */
+  .admin-card-body > div[style*="grid-template-columns:repeat(3"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* ── Very small screens ── */
+@media (max-width: 360px) {
+  .admin-stats-grid { grid-template-columns: 1fr !important; }
+  .admin-content { padding: 12px !important; }
+}
+
+/* ── Hide toggle on desktop ── */
+.admin-menu-toggle { display: none; }
+
+/* ── Tablet 769-1024px ── */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .admin-layout { grid-template-columns: 200px 1fr !important; }
+  .admin-sidebar { width: 200px !important; }
+  .admin-nav-item { font-size: 0.82rem; padding: 10px 14px; }
+  .admin-logo { padding: 16px 14px; }
+  .admin-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .admin-content { padding: 20px !important; }
+}

@@ -40,9 +40,9 @@ async function init() {
 async function loadProducts() {
     try {
         const data = await apiFetch('/api/products?limit=100');
-        state.all = data.products || DEMO_PRODUCTS;
+        state.all = data.products || [];
     } catch {
-        state.all = DEMO_PRODUCTS;
+        state.all = [];
     }
 }
 
