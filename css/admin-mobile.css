@@ -1,62 +1,52 @@
 /* ============================================
-   ELHIKO Admin - Mobile Responsive
+   ELHIKO Admin - Responsive
+   Desktop first — only changes on small screens
    ============================================ */
 
-/* ── Admin layout: sidebar hidden on mobile ── */
+/* ── Always hidden on desktop ── */
+.admin-menu-toggle {
+  display: none;
+}
+
+.sidebar-mobile-overlay {
+  display: none;
+}
+
+/* ── Tablet 769-1024px ── */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .admin-layout {
+    grid-template-columns: 200px 1fr;
+  }
+
+  .admin-sidebar {
+    width: 200px;
+  }
+
+  .admin-nav-item {
+    font-size: 0.82rem;
+    padding: 10px 14px;
+  }
+
+  .admin-logo {
+    padding: 16px 14px;
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* ── Mobile 768px and below ── */
 @media (max-width: 768px) {
 
-  /* Layout */
-  .admin-layout {
-    grid-template-columns: 1fr !important;
-    position: relative;
-  }
-
-  /* Sidebar hidden by default */
-  .admin-sidebar {
-    position: fixed !important;
-    top: 0;
-    right: -280px;
-    width: 260px !important;
-    height: 100vh;
-    z-index: 1100;
-    transition: right 0.3s ease;
-    box-shadow: none;
-    overflow-y: auto;
-  }
-
-  .admin-sidebar.mobile-open {
-    right: 0;
-    box-shadow: -4px 0 20px rgba(0,0,0,0.3);
-  }
-
-  /* Sidebar overlay */
-  .sidebar-mobile-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 1050;
-  }
-  .sidebar-mobile-overlay.open { display: block; }
-
-  /* Topbar */
-  .admin-topbar {
-    padding: 12px 16px !important;
-    gap: 10px;
-  }
-
-  .topbar-left { gap: 10px; }
-  .topbar-title { font-size: 0.9rem; }
-
-  .topbar-search { display: none; }
-
-  /* Menu toggle button */
+  /* Show hamburger button */
   .admin-menu-toggle {
-    display: flex !important;
+    display: flex;
     width: 36px;
     height: 36px;
-    background: rgba(255,255,255,0.08);
-    border: 1.5px solid rgba(255,255,255,0.15);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
     color: #fff;
     align-items: center;
@@ -64,102 +54,206 @@
     cursor: pointer;
     font-size: 1rem;
     flex-shrink: 0;
+    margin-left: 8px;
   }
 
-  /* Content padding */
-  .admin-content { padding: 16px !important; }
+  /* Overlay */
+  .sidebar-mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 1050;
+  }
 
-  /* Stats grid */
+  .sidebar-mobile-overlay.open {
+    display: block;
+  }
+
+  /* Main layout — full width, no sidebar column */
+  .admin-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Sidebar slides in from right */
+  .admin-sidebar {
+    position: fixed !important;
+    top: 0;
+    right: -270px;
+    width: 260px !important;
+    height: 100vh;
+    z-index: 1100;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+  }
+
+  .admin-sidebar.mobile-open {
+    right: 0;
+    box-shadow: -6px 0 24px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Topbar adjustments */
+  .admin-topbar {
+    padding: 10px 14px !important;
+  }
+
+  .topbar-search {
+    display: none;
+  }
+
+  .topbar-title {
+    font-size: 0.88rem;
+  }
+
+  /* Content */
+  .admin-content {
+    padding: 14px !important;
+  }
+
+  /* Stats */
   .admin-stats-grid {
     grid-template-columns: 1fr 1fr !important;
-    gap: 12px !important;
+    gap: 12px;
   }
 
-  .stat-card { padding: 16px !important; }
-  .stat-icon { width: 40px; height: 40px; font-size: 1rem; }
-  .stat-info h3 { font-size: 1.3rem; }
+  .stat-card {
+    padding: 14px !important;
+  }
+
+  .stat-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
+
+  .stat-info h3 {
+    font-size: 1.2rem;
+  }
 
   /* Page heading */
   .page-heading {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 8px;
   }
-  .page-heading h1 { font-size: 1.3rem; }
+
+  .page-heading h1 {
+    font-size: 1.2rem;
+  }
 
   /* Dashboard grid */
   .dashboard-grid {
     grid-template-columns: 1fr !important;
   }
 
-  /* Cards */
+  /* Card header */
   .admin-card-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    padding: 14px 16px;
+    padding: 12px 14px;
   }
 
-  /* Table wrapper */
-  .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .admin-table { min-width: 600px; font-size: 0.8rem; }
-  .admin-table thead th { padding: 10px 12px; font-size: 0.72rem; }
-  .admin-table tbody td { padding: 10px 12px; }
+  /* Table */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-table {
+    min-width: 580px;
+    font-size: 0.79rem;
+  }
+
+  .admin-table thead th {
+    padding: 9px 10px;
+    font-size: 0.7rem;
+  }
+
+  .admin-table tbody td {
+    padding: 9px 10px;
+  }
 
   /* Toolbar */
-  .admin-toolbar { flex-direction: column; gap: 10px; }
-  .toolbar-search { max-width: 100% !important; }
-  .toolbar-filters { flex-wrap: wrap; gap: 8px; }
-  .filter-select { font-size: 0.8rem; padding: 7px 10px; }
-
-  /* Forms grid */
-  .form-grid, .admin-form .form-grid { grid-template-columns: 1fr !important; }
-
-  /* Modal */
-  .modal, .modal-lg {
-    max-width: 95vw !important;
-    max-height: 90vh;
-    overflow-y: auto;
-    margin: 5vh auto;
+  .admin-toolbar {
+    flex-direction: column;
+    gap: 10px;
   }
-  .modal-body { padding: 16px !important; }
-  .modal-header { padding: 14px 16px; }
-  .modal-footer { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
 
-  /* Status tabs */
-  #statusTabs, .status-tab-wrap {
-    gap: 6px !important;
+  .toolbar-search {
+    max-width: 100% !important;
+  }
+
+  .toolbar-filters {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Modals */
+  .modal,
+  .modal-lg {
+    max-width: 95vw !important;
+    max-height: 92vh;
+    overflow-y: auto;
+    margin: 4vh auto;
+  }
+
+  .modal-body {
+    padding: 14px !important;
+  }
+
+  .modal-header {
+    padding: 12px 16px;
+  }
+
+  .modal-footer {
+    padding: 10px 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Forms */
+  .form-grid,
+  .admin-form .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Status tabs — scrollable */
+  #statusTabs {
     overflow-x: auto;
     flex-wrap: nowrap !important;
     padding-bottom: 4px;
+    gap: 6px !important;
+    -webkit-overflow-scrolling: touch;
   }
-  .status-tab { white-space: nowrap; font-size: 0.78rem; padding: 6px 10px; }
 
-  /* Orders table adjustments */
-  .status-select { font-size: 0.72rem; padding: 4px 8px; }
-  .qa-btn { width: 28px; height: 28px; font-size: 0.8rem; }
+  .status-tab {
+    white-space: nowrap;
+    font-size: 0.76rem;
+    padding: 5px 10px;
+    flex-shrink: 0;
+  }
 
-  /* Quick actions grid */
-  .admin-card-body > div[style*="grid-template-columns:repeat(3"] {
-    grid-template-columns: 1fr 1fr !important;
+  /* Quick action buttons */
+  .qa-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 0.75rem;
+  }
+
+  .status-select {
+    font-size: 0.7rem;
+    padding: 3px 7px;
   }
 }
 
-/* ── Very small screens ── */
-@media (max-width: 360px) {
-  .admin-stats-grid { grid-template-columns: 1fr !important; }
-  .admin-content { padding: 12px !important; }
-}
+/* ── Very small 360px ── */
+@media (max-width: 380px) {
+  .admin-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
 
-/* ── Hide toggle on desktop ── */
-.admin-menu-toggle { display: none; }
-
-/* ── Tablet 769-1024px ── */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .admin-layout { grid-template-columns: 200px 1fr !important; }
-  .admin-sidebar { width: 200px !important; }
-  .admin-nav-item { font-size: 0.82rem; padding: 10px 14px; }
-  .admin-logo { padding: 16px 14px; }
-  .admin-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-  .admin-content { padding: 20px !important; }
+  .admin-content {
+    padding: 10px !important;
+  }
 }
