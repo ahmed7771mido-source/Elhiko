@@ -638,10 +638,11 @@
     inset: 0;
     background: rgba(0, 0, 0, 0.55);
     z-index: 2000;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 20px;
     backdrop-filter: blur(3px);
+    overflow-y: auto;
 }
 
 .modal-overlay.open {
@@ -653,10 +654,12 @@
     border-radius: var(--radius-lg);
     width: 100%;
     max-width: 560px;
-    max-height: 90vh;
-    overflow-y: auto;
+    max-height: none;
+    overflow-y: visible;
     box-shadow: var(--shadow-lg);
     animation: modalIn 0.25s ease;
+    margin: auto;
+    align-self: flex-start;
 }
 
 .modal-lg {

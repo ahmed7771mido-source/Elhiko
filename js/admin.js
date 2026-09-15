@@ -172,29 +172,42 @@ function closeProductModal() { document.getElementById('productModal').classList
 function saveProduct(e) {
     e?.preventDefault();
     const id = document.getElementById('productId').value;
+
+    const name     = getValue('pName').trim();
+    const brand    = getValue('pBrand').trim();
+    const priceRaw = getValue('pPrice').trim();
+    const category = getValue('pCategory');
+    const price    = parseFloat(priceRaw);
+
+    // Validate required fields clearly
+    if (!name)     { showToast('اسم المنتج مطلوب', 'error');   document.getElementById('pName').focus();     return; }
+    if (!brand)    { showToast('الدار/الماركة مطلوبة', 'error'); document.getElementById('pBrand').focus();    return; }
+    if (!priceRaw || isNaN(price) || price <= 0) {
+        showToast('السعر مطلوب ويجب أن يكون أكبر من 0', 'error');
+        document.getElementById('pPrice').focus();
+        return;
+    }
+    if (!category) { showToast('اختر الفئة', 'error');           document.getElementById('pCategory').focus(); return; }
+
     const product = {
-        name: getValue('pName'),
-        brand: getValue('pBrand'),
-        price: +getValue('pPrice'),
-        old_price: getValue('pOldPrice') ? +getValue('pOldPrice') : null,
-        category: getValue('pCategory'),
-        stock: +getValue('pStock'),
-        sizes: getValue('pSizes').split(',').map(s => s.trim()).filter(Boolean),
-        status: getValue('pStatus'),
+        name,
+        brand,
+        price,
+        old_price: getValue('pOldPrice') ? parseFloat(getValue('pOldPrice')) : null,
+        category,
+        stock:       parseInt(getValue('pStock')) || 0,
+        sizes:       getValue('pSizes').split(',').map(s => s.trim()).filter(Boolean),
+        status:      getValue('pStatus') || 'active',
         description: getValue('pDescription'),
-        notes: { top: '', heart: '', base: '' },
-        image: document.getElementById('pImageB64')?.value || getValue('pImage') || '',
-        images: (() => {
+        notes:       { top: '', heart: '', base: '' },
+        image:       document.getElementById('pImageB64')?.value || getValue('pImage') || '',
+        images:      (() => {
             try { const v = getValue('pImages'); return v ? JSON.parse(v) : []; }
             catch { return []; }
         })(),
-        is_new: getCheck('pIsNew'),
+        is_new:   getCheck('pIsNew'),
         featured: getCheck('pFeatured'),
     };
-
-    if (!product.name || !product.brand || !product.price || !product.category) {
-        showToast('يرجى ملء جميع الحقول الإلزامية', 'error'); return;
-    }
 
     const method = id ? 'PUT' : 'POST';
     const url = id ? `/api/products/${id}` : '/api/products';
@@ -203,35 +216,27 @@ function saveProduct(e) {
     const saveBtn = document.querySelector('#productModal .btn-primary');
     if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; }
 
-    // Use FormData so the server can receive the image file directly
-    const formData = new FormData();
-    Object.entries(product).forEach(([k, v]) => {
-        if (v === null || v === undefined) return;
-        if (Array.isArray(v)) {
-            formData.append(k, JSON.stringify(v));
-        } else {
-            formData.append(k, String(v));
-        }
-    });
-
-    // Attach image file if a new one was selected
-    const imgFile = document.getElementById('pImageFile')?.files?.[0];
-    if (imgFile) formData.set('image', imgFile);
-
     fetch(url, {
         method,
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
-        body: formData,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(product),
     })
-        .then(res => res.json())
-        .then(data => {
-            if (!data.success) throw new Error(data.message || 'فشل');
+        .then(async res => {
+            const data = await res.json();
+            console.log('Save response:', res.status, data);
+            if (!res.ok || !data.success) {
+                throw new Error(data.message || 'HTTP ' + res.status);
+            }
             closeProductModal();
             showToast(id ? 'تم تحديث المنتج بنجاح' : 'تمت إضافة المنتج بنجاح ✓', 'success');
             loadProducts();
         })
         .catch(err => {
-            showToast('فشل حفظ المنتج: ' + (err.message || 'تأكد من الاتصال'), 'error');
+            console.error('Save error:', err);
+            showToast('فشل: ' + err.message, 'error');
         })
         .finally(() => {
             if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> حفظ المنتج'; }
